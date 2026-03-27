@@ -1,0 +1,34 @@
+{
+  "name": "stripe",
+  "version": "1.0.0",
+  "description": "Stripe payments API",
+  "base_url": "https://api.stripe.com/v1",
+  "auth": {
+    "type": "api_key",
+    "header": "Authorization",
+    "prefix": "Bearer"
+  },
+  "commands": [
+    {
+      "name": "list_customers",
+      "method": "GET",
+      "path": "/customers",
+      "description": "List all customers",
+      "params": [
+        {
+          "name": "limit",
+          "description": "Maximum number of customers to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "get_balance",
+      "method": "GET",
+      "path": "/balance",
+      "description": "Retrieve the current account balance"
+    }
+  ]
+}

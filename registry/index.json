@@ -1,0 +1,19 @@
+{
+  "tools": [
+    {
+      "name": "stripe",
+      "description": "Stripe payments API",
+      "version": "1.0.0"
+    },
+    {
+      "name": "github",
+      "description": "GitHub REST API",
+      "version": "1.0.0"
+    },
+    {
+      "name": "notion",
+      "description": "Notion workspace API",
+      "version": "1.0.0"
+    }
+  ]
+}

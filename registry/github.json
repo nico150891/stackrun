@@ -1,0 +1,34 @@
+{
+  "name": "github",
+  "version": "1.0.0",
+  "description": "GitHub REST API",
+  "base_url": "https://api.github.com",
+  "auth": {
+    "type": "bearer",
+    "header": "Authorization",
+    "prefix": "Bearer"
+  },
+  "commands": [
+    {
+      "name": "list_repos",
+      "method": "GET",
+      "path": "/user/repos",
+      "description": "List repositories for the authenticated user",
+      "params": [
+        {
+          "name": "sort",
+          "description": "Sort by: created, updated, pushed, full_name",
+          "required": false,
+          "location": "query",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "get_user",
+      "method": "GET",
+      "path": "/user",
+      "description": "Get the authenticated user"
+    }
+  ]
+}

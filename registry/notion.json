@@ -1,0 +1,25 @@
+{
+  "name": "notion",
+  "version": "1.0.0",
+  "description": "Notion workspace API",
+  "base_url": "https://api.notion.com/v1",
+  "auth": {
+    "type": "bearer",
+    "header": "Authorization",
+    "prefix": "Bearer"
+  },
+  "commands": [
+    {
+      "name": "list_databases",
+      "method": "POST",
+      "path": "/search",
+      "description": "Search all databases in the workspace"
+    },
+    {
+      "name": "list_users",
+      "method": "GET",
+      "path": "/users",
+      "description": "List all users in the workspace"
+    }
+  ]
+}

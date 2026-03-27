@@ -1,0 +1,49 @@
+/** Supported authentication types for MVP */
+export type AuthType = 'none' | 'api_key' | 'bearer';
+
+/** Authentication configuration for a SaaS tool */
+export interface AuthConfig {
+  type: AuthType;
+  header?: string;
+  prefix?: string;
+}
+
+/** A single API command exposed by a tool */
+export interface ToolCommand {
+  name: string;
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  path: string;
+  description: string;
+  params?: CommandParam[];
+}
+
+/** Parameter definition for a command */
+export interface CommandParam {
+  name: string;
+  description: string;
+  required: boolean;
+  location: 'query' | 'body' | 'path';
+  type: 'string' | 'number' | 'boolean';
+}
+
+/** The manifest: central contract describing a SaaS tool */
+export interface ToolManifest {
+  name: string;
+  version: string;
+  description: string;
+  base_url: string;
+  auth: AuthConfig;
+  commands: ToolCommand[];
+}
+
+/** Registry index: list of available tools */
+export interface RegistryIndex {
+  tools: RegistryEntry[];
+}
+
+/** Single entry in the registry index */
+export interface RegistryEntry {
+  name: string;
+  description: string;
+  version: string;
+}
