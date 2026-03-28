@@ -8,12 +8,18 @@
     "header": "Authorization",
     "prefix": "Bearer"
   },
+  "headers": {
+    "Notion-Version": "2022-06-28"
+  },
   "commands": [
     {
       "name": "list_databases",
       "method": "POST",
       "path": "/search",
-      "description": "Search all databases in the workspace"
+      "description": "Search all databases in the workspace",
+      "headers": {
+        "Content-Type": "application/json"
+      }
     },
     {
       "name": "list_users",

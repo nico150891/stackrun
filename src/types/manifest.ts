@@ -15,6 +15,8 @@ export interface ToolCommand {
   path: string;
   description: string;
   params?: CommandParam[];
+  /** Per-command headers (merged with tool-level headers, command wins on conflict) */
+  headers?: Record<string, string>;
 }
 
 /** Parameter definition for a command */
@@ -33,6 +35,8 @@ export interface ToolManifest {
   description: string;
   base_url: string;
   auth: AuthConfig;
+  /** Tool-level headers sent with every request (e.g., API version) */
+  headers?: Record<string, string>;
   commands: ToolCommand[];
 }
 

@@ -12,8 +12,11 @@ program
 // Commands will be registered here as they are implemented
 // program.addCommand(searchCommand);
 // program.addCommand(installCommand);
+// program.addCommand(uninstallCommand);
 // program.addCommand(loginCommand);
+// program.addCommand(logoutCommand);
 // program.addCommand(callCommand);
 // program.addCommand(listCommand);
+// program.addCommand(schemaCommand);
 
 program.parse();

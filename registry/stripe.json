@@ -25,6 +25,31 @@
       ]
     },
     {
+      "name": "create_customer",
+      "method": "POST",
+      "path": "/customers",
+      "description": "Create a new customer",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": [
+        {
+          "name": "email",
+          "description": "Customer email address",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "description": "Customer full name",
+          "required": false,
+          "location": "body",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "get_balance",
       "method": "GET",
       "path": "/balance",
