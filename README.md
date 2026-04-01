@@ -8,6 +8,8 @@ Universal CLI to install, authenticate, and execute SaaS tools from terminal.
 
 Built for developers and AI agents that need to interact with external APIs without wrappers or SDKs.
 
+![demo](demo.gif)
+
 ## How it works
 
 Each SaaS tool is described by a declarative JSON manifest (URL, auth, endpoints). Stackrun handles the full flow: search tools in a registry, install them, store tokens, and execute HTTP calls.
