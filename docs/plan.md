@@ -178,11 +178,101 @@
 
 ---
 
-## Phase 6 — Stackrun Cloud (V1)
+## Phase 6 — MCP Server
+
+**Goal:** Stackrun becomes an MCP server. Any AI agent (Claude, Cursor, etc.) can use installed tools as native tool calls — no bash parsing, fully structured.
+
+**Why this first:** MCP is the biggest technical differentiator. One Stackrun MCP server replaces N individual MCP servers (one per API). Each manifest JSON automatically becomes MCP tools. This positions Stackrun as the universal bridge between AI agents and SaaS APIs.
+
+### Tasks
+
+#### 6A — MCP foundation
+- [ ] Add `@modelcontextprotocol/sdk` dependency
+- [ ] `src/mcp/server.ts` — MCP server that exposes installed tools as MCP tools
+  - On startup: read all installed manifests from `~/.stackrun/tools/`
+  - For each manifest command: register as an MCP tool with name `<tool>_<command>` (e.g., `stripe_list_customers`)
+  - Tool description from manifest command description
+  - Tool input schema generated from manifest params (name, type, required)
+- [ ] `src/mcp/handler.ts` — handles MCP tool calls
+  - Receives tool name + params from the agent
+  - Routes to the existing executor service (reuse 100% of Phase 4 code)
+  - Returns structured JSON response
+- [ ] `stackrun mcp` command — starts the MCP server (stdio transport)
+- [ ] Tests: MCP server registers tools correctly, handles calls, returns structured responses
+
+**Checkpoint:** Add to Claude Desktop config → agent can `stripe_list_customers` via Stackrun MCP.
+
+#### 6B — Dynamic tool discovery
+- [ ] MCP server refreshes tool list when manifests change (install/uninstall)
+- [ ] `stackrun mcp --list` — show what tools would be exposed via MCP
+- [ ] Support MCP resource for tool schemas (agents can inspect before calling)
+
+**Checkpoint:** Install a new tool while MCP server runs → agent immediately sees new commands.
+
+#### 6C — Documentation & validation
+- [ ] README section: "Use with Claude Desktop / Cursor"
+- [ ] Example MCP config for Claude Desktop (`claude_desktop_config.json`)
+- [ ] Example MCP config for Cursor
+- [ ] Test with real agent: Claude Desktop calls Stripe via Stackrun MCP
+
+**Checkpoint:** A user can follow the README and have Claude calling APIs via Stackrun in under 5 minutes.
+
+---
+
+## Phase 7 — Registry Expansion & OAuth2
+
+**Goal:** More tools, and support for APIs that require OAuth2 (Google, Salesforce, etc.).
+
+### Tasks
+
+#### 7A — Registry expansion (no code changes needed)
+- [ ] Add manifests: Twilio, Jira, Resend, Vercel, Cloudflare, OpenAI
+- [ ] Update `registry/index.json`
+- [ ] Each tool = content for a social media post
+
+#### 7B — OAuth2 auth type
+- [ ] New auth type: `oauth2` in manifest schema
+  - Fields: `auth_url`, `token_url`, `client_id`, `scopes`
+- [ ] `src/services/oauth.ts` — OAuth2 browser flow
+  - Start local HTTP server on random port
+  - Open browser to authorization URL
+  - Receive callback with auth code
+  - Exchange code for access token
+  - Store token via auth service
+- [ ] `stackrun login <tool>` detects `auth.type === 'oauth2'` and triggers browser flow
+- [ ] Token refresh logic (if refresh_token is provided)
+- [ ] Tests: OAuth2 flow with mocked browser/callback
+- [ ] First OAuth2 tool: Google (Gmail or Sheets)
+
+**Checkpoint:** `stackrun login google` opens browser, user authorizes, token is stored. `stackrun call google list_emails` works.
+
+---
+
+## Phase 8 — CLI Polish & DX
+
+**Goal:** Quality-of-life improvements for developers and agents.
+
+### Tasks
+- [ ] **Shell completions** — bash/zsh autocomplete for tool names and commands
+- [ ] **`stackrun init`** — interactive wizard to scaffold a new tool manifest
+  - Prompts for name, base_url, auth type
+  - Asks for commands interactively
+  - Generates valid JSON, validates with validator service
+  - Optionally adds to registry/index.json
+- [ ] **Encrypted token storage** — encrypt `tokens.json` at rest (V1 requirement)
+  - Use OS keychain (macOS Keychain, Linux Secret Service) or local encryption with master password
+- [ ] **`stackrun doctor`** — diagnostic command
+  - Check Node.js version, config directory, installed tools, stored tokens, registry connectivity
+
+**Checkpoint:** Contributors can create tools with `stackrun init`. Tokens are encrypted. Shell completions work.
+
+---
+
+## Phase 9 — Stackrun Cloud
 
 **Goal:** Hosted layer on top of the CLI. Encrypted vault, team sharing, hosted registry. $49/team/month.
 
-> This is a separate product built on top of the CLI. Planning starts after MVP is validated (>200 stars, >100 installs/week).
+> Planning starts after MVP is validated (>200 stars, >100 installs/week).
 
 ### Modules (high-level, to be detailed when we get here)
 - [ ] **Auth service** — user registration, login, sessions (likely Supabase or custom)
@@ -203,11 +293,9 @@
 
 ---
 
-## Future (beyond V1)
+## Future (beyond Cloud)
 
-- **OAuth2 auth type** — browser flow with local callback server
 - **Plugin system** — custom pre/post hooks per tool
-- **Autocomplete** — shell completions for installed tools and commands
-- **`stackrun init`** — scaffold a new tool manifest interactively
 - **Official SaaS manifests** — partnerships with SaaS companies to maintain their own manifests
 - **Marketplace** — community-maintained tools with ratings and reviews
+- **Stackrun as npm library** — import and use programmatically, not just CLI
