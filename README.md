@@ -1,5 +1,9 @@
 # Stackrun
 
+[![npm package](https://img.shields.io/npm/v/@nico0891/stackrun?color=brightgreen)](https://www.npmjs.com/package/@nico0891/stackrun)
+[![node](https://img.shields.io/node/v/@nico0891/stackrun?color=blue)](https://nodejs.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Universal CLI to install, authenticate, and execute SaaS tools from terminal.
 
 Built for developers and AI agents that need to interact with external APIs without wrappers or SDKs.
