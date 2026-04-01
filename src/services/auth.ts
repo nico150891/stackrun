@@ -1,18 +1,22 @@
-import { readTokens, writeTokens } from './storage.js';
+import { readTokens, writeTokens, withTokenLock } from './storage.js';
 import type { OAuthTokenData } from '../types/manifest.js';
 
 /** Stores a plain token (api_key/bearer) for a specific tool */
 export async function saveToken(toolName: string, token: string): Promise<void> {
-  const tokens = await readTokens();
-  tokens[toolName] = token;
-  await writeTokens(tokens);
+  await withTokenLock(async () => {
+    const tokens = await readTokens();
+    tokens[toolName] = token;
+    await writeTokens(tokens);
+  });
 }
 
 /** Stores OAuth2 token data for a specific tool */
 export async function saveOAuthToken(toolName: string, data: OAuthTokenData): Promise<void> {
-  const tokens = await readTokens();
-  tokens[toolName] = data;
-  await writeTokens(tokens);
+  await withTokenLock(async () => {
+    const tokens = await readTokens();
+    tokens[toolName] = data;
+    await writeTokens(tokens);
+  });
 }
 
 /** Retrieves the access token string for a tool, or null if not found.
@@ -35,11 +39,13 @@ export async function getOAuthTokenData(toolName: string): Promise<OAuthTokenDat
 
 /** Removes the stored token for a tool. Returns true if it existed. */
 export async function removeToken(toolName: string): Promise<boolean> {
-  const tokens = await readTokens();
-  if (!(toolName in tokens)) return false;
-  delete tokens[toolName];
-  await writeTokens(tokens);
-  return true;
+  return withTokenLock(async () => {
+    const tokens = await readTokens();
+    if (!(toolName in tokens)) return false;
+    delete tokens[toolName];
+    await writeTokens(tokens);
+    return true;
+  });
 }
 
 /** Checks whether a token exists for a tool */

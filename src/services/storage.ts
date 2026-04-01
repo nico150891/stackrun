@@ -171,6 +171,27 @@ export async function writeTokens(tokens: TokenStore): Promise<void> {
   }
 }
 
+/**
+ * Mutex for token file operations.
+ * Prevents concurrent read-modify-write races on tokens.json.
+ */
+let tokenLock: Promise<void> = Promise.resolve();
+
+/** Serializes access to tokens.json. Queues operations to prevent race conditions. */
+export async function withTokenLock<T>(fn: () => Promise<T>): Promise<T> {
+  const prev = tokenLock;
+  let releaseLock: () => void;
+  tokenLock = new Promise<void>((resolve) => {
+    releaseLock = resolve;
+  });
+  await prev;
+  try {
+    return await fn();
+  } finally {
+    releaseLock!();
+  }
+}
+
 /** Type guard for Node.js system errors with a `code` property */
 function isNodeError(err: unknown): err is NodeJS.ErrnoException {
   return err instanceof Error && 'code' in err;

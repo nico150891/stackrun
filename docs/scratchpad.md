@@ -255,3 +255,29 @@ Session notes and discoveries go here.
 ### Test coverage (cumulative)
 - 19 security tests: token storage (3), input validation (7), OAuth2 (2), network (5), command injection (1), plus the redirect fix test
 - Total: 141 tests passing
+
+---
+
+## 2026-04-01 — Phase 7E Complete (CI/CD & Engineering Quality)
+
+### What was added
+- `.github/workflows/ci.yml` — 4 parallel jobs: Lint & Typecheck, Test (Node 20+22 matrix), Build, Dependency Audit
+- `.github/workflows/smoke.yml` — post-publish validation on Ubuntu + macOS (Node 20+22)
+- `@vitest/coverage-v8` — coverage reports in CI, uploaded as artifacts
+- `tests/unit/edge-cases.test.ts` — filesystem, large responses, concurrent operations, manifest limits
+- CONTRIBUTING.md rewritten with testing guide, CI docs, coverage instructions
+
+### Bug found and fixed: token write race condition
+Edge case tests discovered that concurrent `saveToken()` calls corrupt `tokens.json`. The read-modify-write cycle (`readTokens()` → modify → `writeTokens()`) is not atomic — two concurrent calls read the same state, modify independently, and the last write wins, losing the first write's data.
+
+**Fix**: `withTokenLock()` in `storage.ts` — a promise-based mutex that serializes all token file operations. `saveToken()`, `saveOAuthToken()`, and `removeToken()` now go through the lock.
+
+### Decisions
+- **`maxRedirects: 0` for authenticated requests** (from 7D): Some APIs use legitimate redirects (301/302), so this might need a smarter approach later (strip auth on cross-origin). For now, safety > convenience.
+- **Coverage without threshold**: CI generates coverage but doesn't fail on low %. The report is for visibility, not gatekeeping. Useful for spotting untested branches, not for gaming a number.
+- **Smoke test on Ubuntu + macOS only**: Windows is low-priority for now (Node.js + npm work the same). Can add later if users report issues.
+- **Branch protection not automated**: Requires manual GitHub settings. Left as a TODO — should be done before accepting external PRs.
+
+### Test coverage (cumulative)
+- 10 edge case tests: filesystem (4), large response (1), concurrent ops (3), manifest edge cases (2)
+- Total: 151 tests passing

@@ -295,6 +295,37 @@
 
 **Checkpoint:** 141 tests passing. 3 vulnerabilidades fixeadas. 19 security tests automatizados. ✅ Done (2026-04-01)
 
+#### 7E — CI/CD & Engineering Quality
+
+**Goal:** Los tests, lint, typecheck y build corren automáticamente en cada push/PR. Nadie puede mergear código roto. Dependency audit y smoke tests aseguran que lo que se publica funciona.
+
+##### GitHub Actions — CI pipeline
+- [x] `.github/workflows/ci.yml` — runs on push to `main` + all PRs
+  - 4 jobs: Lint & Typecheck, Test (Node 20 + 22), Build, Dependency Audit
+  - Coverage report uploaded as artifact (Node 22, 14 days retention)
+- [ ] **Branch protection**: configurar en GitHub — require CI pass antes de merge a `main`
+
+##### Test coverage
+- [x] `@vitest/coverage-v8` installed, `npm test -- --coverage` works
+- [x] CI runs coverage automatically and uploads report
+
+##### Smoke test post-publish
+- [x] `.github/workflows/smoke.yml` — triggers on release, npm publish, or manual
+  - Matrix: Ubuntu + macOS, Node 20 + 22
+  - Verifies: `--help`, `search`, `install`, `schema`, `uninstall`
+
+##### Edge case tests + bug fix
+- [x] `~/.stackrun/` read-only → error claro, no crash
+- [x] 50K item response → no OOM
+- [x] **Race condition found and fixed**: concurrent `saveToken()` calls corrupted `tokens.json`. Fix: `withTokenLock()` mutex serializes read-modify-write operations.
+- [x] Concurrent manifest reads (20 parallel) → OK
+- [x] Manifest with 200 commands → OK
+
+##### Documentation
+- [x] CONTRIBUTING.md updated with full testing guide, CI pipeline docs, and "when to add tests" table
+
+**Checkpoint:** CI configured (4 jobs). Smoke test ready. 151 tests passing. Race condition fixed. Docs updated. ✅ Done (2026-04-01)
+
 ---
 
 ## Phase 8 — CLI Polish & DX

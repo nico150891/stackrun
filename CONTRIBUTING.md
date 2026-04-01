@@ -55,20 +55,106 @@ tests/
 
 See `.claude/skills/add-new-tool.md` for the full workflow.
 
-## Writing Tests
+## Testing
 
-- Use **vitest** with the `describe`/`it`/`expect` pattern
-- Mock `homedir()` from `node:os` for storage tests (use a tmpdir)
-- Mock `axios` for HTTP tests — never make real network calls
-- Place unit tests in `tests/unit/`, integration tests in `tests/integration/`
+### Running tests
+
+```bash
+npm test                          # run all tests
+npm test -- --run tests/unit/     # run only unit tests
+npm test -- --coverage            # run with coverage report
+npm run test:watch                # watch mode during development
+```
+
+### Test structure
+
+```
+tests/
+├── unit/                    # Service-level tests (isolated, fast)
+│   ├── storage.test.ts      # File system operations
+│   ├── registry.test.ts     # Registry fetch logic
+│   ├── auth.test.ts         # Token CRUD
+│   ├── executor.test.ts     # HTTP execution engine
+│   ├── validator.test.ts    # Manifest validation
+│   ├── oauth.test.ts        # OAuth2 flow (mock browser/callback)
+│   ├── mcp-server.test.ts   # MCP server tool registration
+│   ├── mcp-handler.test.ts  # MCP tool call handling
+│   ├── install.test.ts      # Install command logic
+│   ├── security.test.ts     # Security: injection, token leaking, redirects
+│   └── edge-cases.test.ts   # Race conditions, large responses, permissions
+└── integration/             # CLI command tests (end-to-end, mock HTTP)
+    ├── cli.test.ts          # Search command
+    ├── install-list-uninstall.test.ts
+    ├── login-logout.test.ts
+    ├── call.test.ts
+    └── schema.test.ts
+```
+
+### Conventions
+
+- **vitest** with `describe`/`it`/`expect` pattern
+- **Mock `homedir()`** from `node:os` for any test touching `~/.stackrun/` — use a tmpdir, clean up in `afterEach`
+- **Mock `axios`** for HTTP tests — never make real network calls in tests
+- **Never mock the validator** — always validate with the real `validateManifest()` to catch regressions
+- **Security tests** verify invariants: token permissions (0o600), no token leaking in output, input sanitization, HTTPS enforcement
+- **Edge case tests** cover: concurrent token writes (race condition), large responses, filesystem permission errors
+
+### When to add tests
+
+| What you changed | Tests needed |
+|-----------------|--------------|
+| New service function | Unit test in `tests/unit/` |
+| New CLI command | Integration test in `tests/integration/` |
+| New manifest in `registry/` | Covered automatically by `security.test.ts` (validates all manifests) |
+| Bug fix | Regression test that reproduces the bug |
+| Security-sensitive code | Test in `security.test.ts` |
+
+### Coverage
+
+Coverage is generated with `npm test -- --coverage` (uses `@vitest/coverage-v8`). CI uploads the report as an artifact on every push. We don't enforce a threshold, but use it to spot untested branches.
+
+## CI/CD
+
+### What runs automatically
+
+Every push to `main` and every PR triggers the CI pipeline (`.github/workflows/ci.yml`):
+
+| Job | What it does |
+|-----|-------------|
+| **Lint & Typecheck** | `npm run lint` + `npm run typecheck` |
+| **Test** | `npm test` on Node 20 and 22, with coverage |
+| **Build** | `npm run build`, verifies `dist/index.js` exists |
+| **Dependency Audit** | `npm audit --audit-level=high` |
+
+All jobs must pass before merging to `main`.
+
+### Smoke tests
+
+After every npm publish or GitHub release, a smoke test (`.github/workflows/smoke.yml`) runs on Ubuntu and macOS:
+
+1. Installs `@nico0891/stackrun` from npm
+2. Runs `stackrun --help`, `search`, `install`, `schema`, `uninstall`
+3. Verifies the published package actually works end-to-end
+
+Can also be triggered manually from the Actions tab.
+
+### Running CI checks locally
+
+Before pushing, run the same checks CI will run:
+
+```bash
+npm run lint && npm run typecheck && npm test && npm run build
+```
 
 ## Pull Requests
 
 1. Fork the repo and create a branch from `main`
 2. Make your changes
-3. Run `npm run typecheck && npm test && npm run lint` — all must pass
-4. Write a clear PR description: what changed, why, how to test
-5. Keep PRs focused — one feature or fix per PR
+3. Run `npm run lint && npm run typecheck && npm test && npm run build` — all must pass
+4. Add tests for new functionality (see "When to add tests" above)
+5. Write a clear PR description: what changed, why, how to test
+6. Keep PRs focused — one feature or fix per PR
+7. CI must pass before merge
 
 ## Reporting Issues
 

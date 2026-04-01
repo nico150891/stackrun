@@ -1,0 +1,38 @@
+name: Smoke Test
+
+# Runs after npm publish or manually
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  smoke:
+    name: Smoke Test (Node ${{ matrix.node-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        node-version: [20, 22]
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install stackrun from npm
+        run: npm install -g @nico0891/stackrun
+
+      - name: Verify CLI starts
+        run: stackrun --help
+
+      - name: Search for a tool
+        run: stackrun search stripe --json | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); if(!d.length) process.exit(1)"
+
+      - name: Install a tool
+        run: stackrun install stripe
+
+      - name: Inspect tool schema
+        run: stackrun schema stripe --json | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); if(!d.commands) process.exit(1)"
+
+      - name: Uninstall tool
+        run: stackrun uninstall stripe --yes
