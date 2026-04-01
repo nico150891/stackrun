@@ -7,21 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-04-01
+
 ### Added
-- OAuth2 auth type with browser flow, token refresh, and Google manifest
-- 7 new tool manifests: Twilio, Jira, Resend, Vercel, Cloudflare, OpenAI, Google
-- Security hardening: command injection fix, redirect leak prevention, 19 security tests
-- CI/CD pipeline: GitHub Actions with lint, typecheck, test (Node 20+22), build, audit
-- Smoke test workflow for post-publish validation
-- Edge case tests: race condition fix, large responses, filesystem errors
-- Branch protection on `main` (required CI checks)
-- LICENSE, SECURITY.md, CODE_OF_CONDUCT.md, PR template, CHANGELOG
+- **OAuth2 auth type** — browser flow with local callback server, automatic token refresh, CSRF protection via state param
+- **7 new tool manifests** — Twilio, Jira, Resend, Vercel, Cloudflare, OpenAI, Google (14 tools total)
+- **Security test suite** — 19 tests covering token storage, input validation, injection prevention, HTTPS enforcement
+- **CI/CD pipeline** — GitHub Actions: lint, typecheck, test (Node 20+22), build, dependency audit
+- **Smoke test workflow** — post-publish validation on Ubuntu + macOS
+- **Edge case tests** — concurrent token writes, large responses, filesystem permission errors
+- **Branch protection** — all PRs require CI to pass before merge
+- **OSS hygiene** — LICENSE, SECURITY.md, CODE_OF_CONDUCT.md, CHANGELOG, PR template, issue templates
 
 ### Fixed
-- Command injection in `openBrowser()` — `exec()` replaced with `execFile()`
-- Token leaking via HTTP redirects — disabled redirects for authenticated requests
-- Token write race condition — added `withTokenLock()` mutex
-- ESLint flat config migration (ESLint 10 compatibility)
+- **Command injection** in `openBrowser()` — `exec()` replaced with `execFile()`
+- **Token leak via redirects** — disabled HTTP redirects for authenticated requests
+- **Token write race condition** — concurrent `saveToken()` calls corrupted `tokens.json`, fixed with `withTokenLock()` mutex
+- **Stale build artifacts** — `prebuild` script cleans `dist/` before compilation
+- **ESLint 10 compatibility** — migrated to flat config format
 
 ## [0.2.0] - 2026-04-01
 
@@ -47,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Global error handler
 - Published to npm as `@nico0891/stackrun`
 
-[Unreleased]: https://github.com/nico150891/stackrun/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/nico150891/stackrun/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/nico150891/stackrun/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/nico150891/stackrun/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/nico150891/stackrun/releases/tag/v0.1.0

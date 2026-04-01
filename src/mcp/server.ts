@@ -19,7 +19,7 @@ let toolsWatcher: FSWatcher | null = null;
 /** Creates and configures the MCP server with all installed tools registered */
 export async function createMcpServer(): Promise<McpServer> {
   const server = new McpServer(
-    { name: 'stackrun', version: '0.2.0' },
+    { name: 'stackrun', version: '0.3.0' },
     {
       capabilities: { tools: {}, resources: {} },
       instructions:

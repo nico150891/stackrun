@@ -34,7 +34,7 @@ const program = new Command();
 program
   .name('stackrun')
   .description('Universal CLI to install, authenticate and execute SaaS tools from terminal')
-  .version('0.2.0');
+  .version('0.3.0');
 
 program.addCommand(searchCommand);
 program.addCommand(installCommand);
