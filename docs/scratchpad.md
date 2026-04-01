@@ -103,11 +103,11 @@ Session notes and discoveries go here.
 - **Agent mode inline vs helper**: Started with a shared `output.ts` helper, but the logic was simple enough (ternary check `options.json || options.agent || !process.stdout.isTTY`) that it's cleaner inline in each command. Removed the unused helper.
 - **`parseParams` knows about known flags**: The custom param parser in call.ts skips `--json`, `--verbose`, `--agent` so they don't leak as API params. This is simpler than trying to get Commander to parse them while also allowing unknown options.
 
-### Remaining Phase 5 tasks (community/release — require GitHub)
-- CONTRIBUTING.md, issue templates, GitHub Topics
-- 3 good-first-issue issues
-- README update with demo
-- Tag v0.1.0 + GitHub Release
+### Community & release (completed)
+- CONTRIBUTING.md with setup, code style, PR process
+- Issue templates: bug report, feature request, new tool
+- 3 good-first-issue issues: #1 Twilio manifest, #2 shell completions, #3 better error messages
+- v0.1.0 tagged and released on GitHub
 
 ### Test coverage (cumulative)
 - 2 schema tests (JSON output, not installed)

@@ -165,14 +165,14 @@
 - [x] Update `registry/index.json` with new entries (7 tools total)
 
 #### Community & release
-- [ ] `CONTRIBUTING.md` — how to contribute, code style, PR process
-- [ ] GitHub issue templates (bug report, feature request, new tool)
+- [x] `CONTRIBUTING.md` — how to contribute, code style, PR process
+- [x] GitHub issue templates (bug report, feature request, new tool)
 - [ ] GitHub Topics + repo metadata
-- [ ] 3 issues labeled `good first issue` for contributors
+- [x] 3 issues labeled `good first issue` for contributors (#1 Twilio, #2 shell completions, #3 error messages)
 - [ ] Update README with GIF demo + real usage examples
-- [ ] Tag v0.1.0 + GitHub Release
+- [x] Tag v0.1.0 + GitHub Release
 
-**Checkpoint:** `npm run build` produces working `dist/`. 80 tests passing. ✅ Technical tasks done (2026-04-01). Community & release tasks pending.
+**Checkpoint:** `npm run build` produces working `dist/`. 80 tests passing. v0.1.0 released. ✅ Done (2026-04-01)
 
 ---
 
