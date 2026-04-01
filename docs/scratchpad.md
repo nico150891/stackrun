@@ -133,3 +133,47 @@ Session notes and discoveries go here.
 - Removed `.claude/settings.json` from git tracking (local config, not project docs)
 - Added badges to README (npm version, node version, license)
 - Added install instructions, available tools table, and agent mode section to README
+
+---
+
+## 2026-04-01 — Phase 6A Complete (MCP Foundation)
+
+### What was added
+- `@modelcontextprotocol/sdk` v1.29.0 dependency (brings zod as transitive dep)
+- `src/mcp/server.ts` — creates McpServer, reads installed manifests, registers each command as MCP tool with Zod input schemas generated from manifest params
+- `src/mcp/handler.ts` — parses MCP tool names (`<tool>_<command>`), loads manifest, checks auth, delegates to executor, formats results as MCP CallToolResult
+- `src/commands/mcp.ts` — `stackrun mcp` command (stdio transport) + `--list` flag to preview exposed tools
+- Wired into `src/index.ts`
+
+### Decisions
+- **Tool naming convention**: `<tool>_<command>` (e.g., `stripe_list_customers`). The first `_` separates tool from command. For tools with hyphens (e.g., `hub-spot`), the handler tries progressively longer prefixes to find the right manifest.
+- **Zod for input schemas**: The MCP SDK requires Zod schemas for tool input validation. We convert manifest `CommandParam[]` to Zod shapes dynamically: `string` → `z.string()`, `number` → `z.number()`, `boolean` → `z.boolean()`, with `.optional()` for non-required params.
+- **100% executor reuse**: The handler converts MCP args to `Record<string, string>` and passes them directly to `executeCommand()`. No HTTP logic duplicated.
+- **Error handling**: HttpApiError returns structured JSON (status, error, data). Network errors return plain text. Both use `isError: true` in MCP protocol.
+- **`--list` flag on `stackrun mcp`**: Allows previewing what tools would be exposed without starting the server. Outputs human-readable to stderr, JSON to stdout when piped.
+- **Server instructions**: MCP server includes instructions string explaining tool naming and auth flow, so agents can self-discover usage.
+
+### Test coverage (cumulative)
+- 4 parseMcpToolName tests (valid parse, no underscore, empty segments, single-word command)
+- 8 handleToolCall tests (success, not installed, bad command, no token, HTTP error, network error, string conversion, auth none skip, invalid format)
+- 4 createMcpServer tests (no tools, single manifest, multiple manifests, zero-arg commands)
+- Total: 97 tests passing
+
+---
+
+## 2026-04-01 — Phase 6B Complete (Dynamic Tool Discovery)
+
+### What was added
+- **Dynamic tool sync**: `syncTools()` compares current manifests vs registered MCP tools, adds new ones and removes stale ones. Uses `RegisteredTool.remove()` from the SDK.
+- **File watcher**: `watchToolsDirectory()` uses `fs.watch` on `~/.stackrun/tools/` with 300ms debounce. When JSON files change, triggers `syncTools()` automatically.
+- **MCP resource template**: `stackrun://tools/{tool_name}` — agents can list all installed tools and read individual manifests via MCP resources protocol.
+- **README MCP section**: Config examples for Claude Desktop, Claude Code, and Cursor.
+
+### Decisions
+- **`fs.watch` over polling**: Native file watching is efficient and immediate. The 300ms debounce prevents rapid-fire resyncs when multiple files change together (e.g., bulk install). If the directory doesn't exist, the watcher silently ignores — no tools installed yet.
+- **Module-level `registeredTools` Map**: Tracks `Map<mcpToolName, RegisteredTool>`. This allows O(1) lookup for add/remove diffs. `clearRegisteredTools()` exposed for test isolation.
+- **Resource template with `list` callback**: The list callback dynamically reads installed tools, so the resource list is always fresh. No caching needed — `readInstalledTools()` is fast (local filesystem).
+
+### Test coverage (cumulative)
+- 5 syncTools tests (add new, remove stale, idempotent, empty→tools, tools→empty)
+- Total: 102 tests passing

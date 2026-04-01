@@ -72,6 +72,60 @@ stackrun schema stripe --json              # discover commands programmatically
 
 Pipe detection is automatic: when stdout is not a TTY, output defaults to JSON.
 
+## MCP Server
+
+Stackrun works as an [MCP](https://modelcontextprotocol.io) server. One Stackrun MCP server replaces N individual API servers — every installed tool becomes native tool calls for your AI agent.
+
+```bash
+stackrun mcp              # start the MCP server (stdio)
+stackrun mcp --list       # preview which tools would be exposed
+```
+
+Each manifest command is exposed as `<tool>_<command>` (e.g., `stripe_list_customers`, `github_get_user`).
+
+### Claude Desktop
+
+Add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "stackrun": {
+      "command": "stackrun",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+### Claude Code
+
+```bash
+claude mcp add stackrun -- stackrun mcp
+```
+
+### Cursor
+
+Add to `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "stackrun": {
+      "command": "stackrun",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+Then install tools and authenticate — the agent can call them immediately:
+
+```bash
+stackrun install stripe && stackrun login stripe --token sk_test_xxx
+# Now your agent can use stripe_list_customers, stripe_create_customer, etc.
+```
+
 ## Development
 
 ```bash
@@ -93,7 +147,8 @@ npm run typecheck   # tsc --noEmit
 
 ```
 src/
-├── commands/       # CLI commands (search, install, uninstall, login, logout, call, list, schema)
+├── commands/       # CLI commands (search, install, uninstall, login, logout, call, list, schema, mcp)
+├── mcp/            # MCP server and tool call handler
 ├── services/       # Business logic (registry, auth, executor, storage, validator)
 ├── types/          # TypeScript type definitions
 └── index.ts        # Entry point

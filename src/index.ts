@@ -10,6 +10,7 @@ import { loginCommand } from './commands/login.js';
 import { logoutCommand } from './commands/logout.js';
 import { callCommand } from './commands/call.js';
 import { schemaCommand } from './commands/schema.js';
+import { mcpCommand } from './commands/mcp.js';
 
 // Global error handler — friendly message instead of stack trace
 process.on('uncaughtException', (err) => {
@@ -29,7 +30,7 @@ const program = new Command();
 program
   .name('stackrun')
   .description('Universal CLI to install, authenticate and execute SaaS tools from terminal')
-  .version('0.1.0');
+  .version('0.2.0');
 
 program.addCommand(searchCommand);
 program.addCommand(installCommand);
@@ -39,5 +40,6 @@ program.addCommand(logoutCommand);
 program.addCommand(callCommand);
 program.addCommand(listCommand);
 program.addCommand(schemaCommand);
+program.addCommand(mcpCommand);
 
 program.parse();

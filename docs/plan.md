@@ -187,35 +187,35 @@
 ### Tasks
 
 #### 6A — MCP foundation
-- [ ] Add `@modelcontextprotocol/sdk` dependency
-- [ ] `src/mcp/server.ts` — MCP server that exposes installed tools as MCP tools
+- [x] Add `@modelcontextprotocol/sdk` dependency
+- [x] `src/mcp/server.ts` — MCP server that exposes installed tools as MCP tools
   - On startup: read all installed manifests from `~/.stackrun/tools/`
   - For each manifest command: register as an MCP tool with name `<tool>_<command>` (e.g., `stripe_list_customers`)
   - Tool description from manifest command description
   - Tool input schema generated from manifest params (name, type, required)
-- [ ] `src/mcp/handler.ts` — handles MCP tool calls
+- [x] `src/mcp/handler.ts` — handles MCP tool calls
   - Receives tool name + params from the agent
   - Routes to the existing executor service (reuse 100% of Phase 4 code)
   - Returns structured JSON response
-- [ ] `stackrun mcp` command — starts the MCP server (stdio transport)
-- [ ] Tests: MCP server registers tools correctly, handles calls, returns structured responses
+- [x] `stackrun mcp` command — starts the MCP server (stdio transport)
+- [x] Tests: MCP server registers tools correctly, handles calls, returns structured responses (97 tests passing)
 
-**Checkpoint:** Add to Claude Desktop config → agent can `stripe_list_customers` via Stackrun MCP.
+**Checkpoint:** Add to Claude Desktop config → agent can `stripe_list_customers` via Stackrun MCP. ✅ Done (2026-04-01)
 
 #### 6B — Dynamic tool discovery
-- [ ] MCP server refreshes tool list when manifests change (install/uninstall)
-- [ ] `stackrun mcp --list` — show what tools would be exposed via MCP
-- [ ] Support MCP resource for tool schemas (agents can inspect before calling)
+- [x] MCP server refreshes tool list when manifests change (install/uninstall)
+- [x] `stackrun mcp --list` — show what tools would be exposed via MCP
+- [x] Support MCP resource for tool schemas (agents can inspect before calling)
 
-**Checkpoint:** Install a new tool while MCP server runs → agent immediately sees new commands.
+**Checkpoint:** Install a new tool while MCP server runs → agent immediately sees new commands. ✅ Done (2026-04-01)
 
 #### 6C — Documentation & validation
-- [ ] README section: "Use with Claude Desktop / Cursor"
-- [ ] Example MCP config for Claude Desktop (`claude_desktop_config.json`)
-- [ ] Example MCP config for Cursor
-- [ ] Test with real agent: Claude Desktop calls Stripe via Stackrun MCP
+- [x] README section: "Use with Claude Desktop / Cursor / Claude Code"
+- [x] Example MCP config for Claude Desktop (`claude_desktop_config.json`)
+- [x] Example MCP config for Cursor
+- [x] Test with real agent: Claude Code calls Stripe via Stackrun MCP
 
-**Checkpoint:** A user can follow the README and have Claude calling APIs via Stackrun in under 5 minutes.
+**Checkpoint:** A user can follow the README and have Claude calling APIs via Stackrun in under 5 minutes. ✅ Done (2026-04-01)
 
 ---
 
