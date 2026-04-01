@@ -18,24 +18,63 @@ stackrun uninstall stripe                           # remove the tool
 stackrun logout stripe                              # remove stored token
 ```
 
+## Install
+
+```bash
+npm install -g @nico0891/stackrun
+```
+
+Then run:
+
+```bash
+stackrun --help
+```
+
 ## Quick Start
 
 ```bash
-# Clone and install
-git clone https://github.com/nico150891/stackrun.git
-cd stackrun
-npm install
-
-# Link for global usage during development
-npm link
-
-# Run in dev mode
-npm run dev -- --help
+stackrun search stripe                              # find tools
+stackrun install stripe                             # install manifest
+stackrun login stripe --token sk_test_xxx           # store API key
+stackrun call stripe list_customers --limit 5       # make the call
+stackrun call stripe list_customers --json | jq .   # pipe JSON output
 ```
+
+## Available Tools
+
+| Tool | Description |
+|------|-------------|
+| stripe | Stripe payments API |
+| github | GitHub REST API |
+| notion | Notion workspace API |
+| slack | Slack messaging API |
+| hubspot | HubSpot CRM API |
+| sendgrid | SendGrid email API |
+| linear | Linear project management API |
+
+Run `stackrun search` to see all available tools.
+
+## Agent Mode
+
+Stackrun is designed for AI agents. Use `--agent` or `--json` for machine-readable output:
+
+```bash
+stackrun search --agent                    # JSON, no spinners, no color
+stackrun call stripe list_customers --json # clean JSON to stdout
+stackrun schema stripe --json              # discover commands programmatically
+```
+
+Pipe detection is automatic: when stdout is not a TTY, output defaults to JSON.
 
 ## Development
 
 ```bash
+# Clone the repo
+git clone https://github.com/nico150891/stackrun.git
+cd stackrun
+npm install
+
+# Scripts
 npm run dev         # run with ts-node
 npm run build       # compile to dist/
 npm test            # run tests (vitest)
