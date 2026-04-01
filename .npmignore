@@ -15,6 +15,7 @@ CLAUDE.md
 
 # Secrets
 token.txt
+*-test-key.txt
 
 # Internal docs
 Stackrun_Technical_Doc.md
