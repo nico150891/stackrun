@@ -1,5 +1,6 @@
 # Stackrun
 
+[![CI](https://github.com/nico150891/stackrun/actions/workflows/ci.yml/badge.svg)](https://github.com/nico150891/stackrun/actions/workflows/ci.yml)
 [![npm package](https://img.shields.io/npm/v/@nico0891/stackrun?color=brightgreen)](https://www.npmjs.com/package/@nico0891/stackrun)
 [![node](https://img.shields.io/node/v/@nico0891/stackrun?color=blue)](https://nodejs.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
