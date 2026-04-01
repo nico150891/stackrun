@@ -5,20 +5,30 @@ docs/
 .claude/
 .github/
 
-# Config files
+# Coverage reports
+coverage/
+
+# Config files (dev only)
 tsconfig.json
 vitest.config.ts
+eslint.config.js
 .editorconfig
 .prettierrc
 .env.example
+.nvmrc
+
+# Docs (npm auto-includes README, LICENSE, CHANGELOG)
 CLAUDE.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+SECURITY.md
+Stackrun_Technical_Doc.md
+Stackrun_Technical_Strategic_Doc.docx
+
+# Assets
+demo.gif
+demo.tape
 
 # Secrets
 token.txt
 *-test-key.txt
-
-# Internal docs
-Stackrun_Technical_Doc.md
-Stackrun_Technical_Strategic_Doc.docx
-demo.tape
-eslint.config.js
