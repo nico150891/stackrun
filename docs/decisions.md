@@ -58,10 +58,11 @@
 **Context:** To keep agent workflows consistent, we create reusable rules and skills under `.claude/`.
 
 **Decision:**
-- `.claude/rules/error-handling.md` — conventions for error display
-- `.claude/rules/manifest-validation.md` — how to validate manifests
-- `.claude/skills/add-new-tool.md` — workflow for adding a new SaaS tool
+- Claude rules and skills are maintained locally (not tracked in git)
+- Rules cover: error handling conventions, manifest validation
+- Skills cover: adding new SaaS tools to the registry
 
 **Consequences:**
 - Consistent agent behavior across sessions
 - Documented workflows for common tasks
+- Internal tooling stays separate from the public repo

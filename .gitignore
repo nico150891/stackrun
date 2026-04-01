@@ -16,10 +16,14 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Claude local settings
-.claude/settings.json
+# Claude (agent config, local to maintainer)
+.claude/
 *.swp
 *.swo
+
+# Internal docs (maintainer notes, not public)
+docs/scratchpad.md
+docs/plan.md
 
 # Coverage
 coverage/
