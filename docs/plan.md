@@ -169,10 +169,12 @@
 - [x] GitHub issue templates (bug report, feature request, new tool)
 - [ ] GitHub Topics + repo metadata
 - [x] 3 issues labeled `good first issue` for contributors (#1 Twilio, #2 shell completions, #3 error messages)
-- [ ] Update README with GIF demo + real usage examples
+- [x] Update README with install instructions, tools table, agent mode, badges
 - [x] Tag v0.1.0 + GitHub Release
+- [x] Publish to npm as `@nico0891/stackrun`
+- [x] Real API validation: GitHub, Stripe (test mode), Notion
 
-**Checkpoint:** `npm run build` produces working `dist/`. 80 tests passing. v0.1.0 released. ✅ Done (2026-04-01)
+**Checkpoint:** `npm run build` produces working `dist/`. 80 tests passing. v0.1.0 released. Published to npm. Validated with 3 real APIs. ✅ Done (2026-04-01)
 
 ---
 

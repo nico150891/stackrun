@@ -30,6 +30,8 @@ npm-debug.log*
 
 # Secrets
 token.txt
+stripe-test-key.txt
+notion-test-key.txt
 
 # Stackrun local data (dev testing)
 .stackrun-dev/

@@ -112,3 +112,24 @@ Session notes and discoveries go here.
 ### Test coverage (cumulative)
 - 2 schema tests (JSON output, not installed)
 - Total: 80 tests passing
+
+---
+
+## 2026-04-01 — npm Publish & Real API Validation
+
+### Publishing
+- Package name `stackrun` was taken on npm — published as `@nico0891/stackrun`
+- Added `publishConfig.access: "public"` in package.json (scoped packages are private by default)
+- Created `.npmignore` to exclude src/, tests/, docs/, .claude/, internal docs from the tarball (75 files, 25.7 kB)
+- Published v0.1.0 to npm: `npm install -g @nico0891/stackrun`
+
+### Real API validation (3 APIs)
+- **GitHub**: `get_user` returned profile (nico150891), `list_repos` returned repos sorted by updated
+- **Stripe** (test mode): `get_balance` returned EUR balance, `create_customer` created `cus_UFs3k87OReyZ2Q` with email/name, `list_customers` confirmed creation
+- **Notion**: `list_users` returned workspace user (Nico Leiva) + bot integration, `list_databases` returned empty (no shared databases)
+
+### Repo hygiene
+- stackrun repo set to public (was private)
+- Removed `.claude/settings.json` from git tracking (local config, not project docs)
+- Added badges to README (npm version, node version, license)
+- Added install instructions, available tools table, and agent mode section to README
