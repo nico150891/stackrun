@@ -1,0 +1,21 @@
+# Source (dist/ is the published code)
+src/
+tests/
+docs/
+.claude/
+.github/
+
+# Config files
+tsconfig.json
+vitest.config.ts
+.editorconfig
+.prettierrc
+.env.example
+CLAUDE.md
+
+# Secrets
+token.txt
+
+# Internal docs
+Stackrun_Technical_Doc.md
+Stackrun_Technical_Strategic_Doc.docx

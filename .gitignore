@@ -25,5 +25,8 @@ coverage/
 *.log
 npm-debug.log*
 
+# Secrets
+token.txt
+
 # Stackrun local data (dev testing)
 .stackrun-dev/

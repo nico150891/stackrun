@@ -1,10 +1,13 @@
 {
-  "name": "stackrun",
+  "name": "@nico0891/stackrun",
   "version": "0.1.0",
   "description": "Universal CLI to install, authenticate and execute SaaS tools from terminal",
   "main": "dist/index.js",
   "bin": {
     "stackrun": "dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "type": "module",
   "scripts": {
