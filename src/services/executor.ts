@@ -92,6 +92,8 @@ export async function executeCommand(options: ExecuteOptions): Promise<ExecuteRe
       headers,
       params: Object.keys(queryParams).length > 0 ? queryParams : undefined,
       data: body,
+      // Disable redirects for authenticated requests to prevent token leaking to HTTP
+      maxRedirects: token ? 0 : 5,
     });
 
     return {

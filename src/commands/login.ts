@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { createInterface } from 'node:readline';
-import { exec } from 'node:child_process';
+import { execFile } from 'node:child_process';
 import { readToolManifest } from '../services/storage.js';
 import { saveToken, saveOAuthToken, hasToken } from '../services/auth.js';
 import { runOAuthFlow } from '../services/oauth.js';
@@ -17,12 +17,16 @@ async function promptToken(toolName: string): Promise<string> {
   });
 }
 
-/** Opens a URL in the default browser */
+/** Opens a URL in the default browser (safe — no shell interpolation) */
 function openBrowser(url: string): void {
   const platform = process.platform;
   const cmd =
     platform === 'darwin' ? 'open' : platform === 'win32' ? 'start' : 'xdg-open';
-  exec(`${cmd} "${url}"`);
+  execFile(cmd, [url], (err) => {
+    if (err) {
+      // Non-fatal: user can open the URL manually (it's printed to stderr)
+    }
+  });
 }
 
 export const loginCommand = new Command('login')

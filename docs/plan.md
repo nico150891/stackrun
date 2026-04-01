@@ -259,6 +259,42 @@
 
 **Checkpoint:** `stackrun login google` funciona sin flags ni configuración previa.
 
+#### 7D — Security hardening
+
+**Goal:** Encontrar y fixear vulnerabilidades antes de expandir el user base. Tests de seguridad automatizados que corren con el test suite.
+
+##### Bugs encontrados y fixeados
+- [x] **Command injection en `openBrowser()`**: `exec()` → `execFile()` (no shell interpolation)
+- [x] **Token leaking via redirects**: `maxRedirects: 0` para requests autenticados (previene HTTPS→HTTP redirect leak)
+- [x] **`--verbose` verificado**: solo muestra URL, params, status, content-type — nunca el auth header
+
+##### Token storage security
+- [x] Test: `tokens.json` tiene permisos `0o600` (solo lectura/escritura del owner)
+- [x] Test: tokens no aparecen en stdout en ningún modo (`--json`, `--agent`, normal)
+- [x] Test: tokens no se incluyen en la salida de `--verbose`
+
+##### Input validation / injection
+- [x] Test: manifest name con path traversal (`../../etc/passwd`) — rechazado por regex `[a-z0-9-]+`
+- [x] Test: manifest name con slashes y dots — rechazado
+- [x] Test: `base_url` path traversal normalizado por URL constructor
+- [x] Test: path params con `../admin/delete` — `encodeURIComponent` los escapa
+- [x] Test: param values con newlines (header injection) — safe porque van a body, no headers
+- [x] Test: param values con null bytes — pasan a query, axios/Node los manejan
+
+##### OAuth2 security
+- [x] Test: callback server solo acepta requests en `127.0.0.1` (verificado en source)
+- [x] Test: state mismatch rechaza el callback
+- [x] Test: OAuth2 `token_url` y `auth_url` deben ser HTTPS
+
+##### Network security
+- [x] Test: todas las `base_url` en los 14 manifests del registry son HTTPS
+- [x] Test: todos los manifests pasan validación
+- [x] Test: redirects deshabilitados para requests autenticados (`maxRedirects: 0`)
+- [x] Test: redirects permitidos para requests sin auth (`maxRedirects: 5`)
+- [x] Test: `openBrowser` usa `execFile` (no `exec`)
+
+**Checkpoint:** 141 tests passing. 3 vulnerabilidades fixeadas. 19 security tests automatizados. ✅ Done (2026-04-01)
+
 ---
 
 ## Phase 8 — CLI Polish & DX

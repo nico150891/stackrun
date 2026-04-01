@@ -238,3 +238,20 @@ Session notes and discoveries go here.
 - 2 buildAuthUrl tests (full URL, empty scopes)
 - 6 runOAuthFlow tests (missing auth_url, no client_id, full flow with mock, state mismatch, error callback, timeout)
 - Total: 122 tests passing
+
+---
+
+## 2026-04-01 — Phase 7D Complete (Security Hardening)
+
+### Vulnerabilities found and fixed
+1. **Command injection in `openBrowser()`** — `exec(xdg-open "${url}")` allowed shell metacharacter injection via malicious `auth_url`. Fixed: replaced `exec` with `execFile` which bypasses the shell entirely, passing the URL as a literal argument.
+2. **Token leaking via HTTP redirects** — axios follows redirects by default. If an API redirects from HTTPS to HTTP, the Authorization header (with the token) would be sent in plaintext. Fixed: `maxRedirects: 0` for authenticated requests, `maxRedirects: 5` for unauthenticated ones.
+3. **`--verbose` mode verified safe** — only logs URL, params, status, and content-type. Auth headers are never included in verbose output.
+
+### Decisions
+- **`maxRedirects: 0` for authenticated requests**: Trade-off: some APIs use 301/302 redirects legitimately (e.g., Stripe redirects old API paths). If this causes issues, we can add a smarter redirect handler that strips auth on cross-origin redirects. For now, the safer default wins.
+- **Source code assertions in tests**: Some security tests read source files to verify invariants (e.g., `execFile` not `exec`, `127.0.0.1` binding). This is intentional — these are guards against future regressions that could introduce vulnerabilities.
+
+### Test coverage (cumulative)
+- 19 security tests: token storage (3), input validation (7), OAuth2 (2), network (5), command injection (1), plus the redirect fix test
+- Total: 141 tests passing
