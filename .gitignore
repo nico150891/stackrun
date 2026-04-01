@@ -25,6 +25,8 @@ CLAUDE.md
 # Internal docs (maintainer notes, not public)
 docs/scratchpad.md
 docs/plan.md
+docs/decisions.md
+demo.tape
 Stackrun_Technical_Doc.md
 Stackrun_Technical_Strategic_Doc.docx
 
