@@ -17,6 +17,7 @@ Thumbs.db
 .idea/
 
 # Claude (agent config, local to maintainer)
+CLAUDE.md
 .claude/
 *.swp
 *.swo
@@ -24,6 +25,8 @@ Thumbs.db
 # Internal docs (maintainer notes, not public)
 docs/scratchpad.md
 docs/plan.md
+Stackrun_Technical_Doc.md
+Stackrun_Technical_Strategic_Doc.docx
 
 # Coverage
 coverage/
