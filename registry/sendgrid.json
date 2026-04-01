@@ -1,0 +1,60 @@
+{
+  "name": "sendgrid",
+  "version": "1.0.0",
+  "description": "SendGrid email API",
+  "base_url": "https://api.sendgrid.com/v3",
+  "auth": {
+    "type": "bearer",
+    "header": "Authorization",
+    "prefix": "Bearer"
+  },
+  "commands": [
+    {
+      "name": "send_email",
+      "method": "POST",
+      "path": "/mail/send",
+      "description": "Send an email",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": [
+        {
+          "name": "to",
+          "description": "Recipient email address",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "subject",
+          "description": "Email subject",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "content",
+          "description": "Email body text",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "list_templates",
+      "method": "GET",
+      "path": "/templates",
+      "description": "List all email templates",
+      "params": [
+        {
+          "name": "generations",
+          "description": "Template generation (legacy or dynamic)",
+          "required": false,
+          "location": "query",
+          "type": "string"
+        }
+      ]
+    }
+  ]
+}

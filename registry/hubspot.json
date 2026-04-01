@@ -1,0 +1,73 @@
+{
+  "name": "hubspot",
+  "version": "1.0.0",
+  "description": "HubSpot CRM API",
+  "base_url": "https://api.hubapi.com/crm/v3",
+  "auth": {
+    "type": "bearer",
+    "header": "Authorization",
+    "prefix": "Bearer"
+  },
+  "commands": [
+    {
+      "name": "list_contacts",
+      "method": "GET",
+      "path": "/objects/contacts",
+      "description": "List all contacts",
+      "params": [
+        {
+          "name": "limit",
+          "description": "Maximum number of contacts to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "get_contact",
+      "method": "GET",
+      "path": "/objects/contacts/:id",
+      "description": "Get a contact by ID",
+      "params": [
+        {
+          "name": "id",
+          "description": "Contact ID",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "list_companies",
+      "method": "GET",
+      "path": "/objects/companies",
+      "description": "List all companies",
+      "params": [
+        {
+          "name": "limit",
+          "description": "Maximum number of companies to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "list_deals",
+      "method": "GET",
+      "path": "/objects/deals",
+      "description": "List all deals",
+      "params": [
+        {
+          "name": "limit",
+          "description": "Maximum number of deals to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        }
+      ]
+    }
+  ]
+}

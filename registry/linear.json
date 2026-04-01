@@ -1,0 +1,64 @@
+{
+  "name": "linear",
+  "version": "1.0.0",
+  "description": "Linear project management API",
+  "base_url": "https://api.linear.app/v1",
+  "auth": {
+    "type": "bearer",
+    "header": "Authorization",
+    "prefix": "Bearer"
+  },
+  "commands": [
+    {
+      "name": "list_issues",
+      "method": "GET",
+      "path": "/issues",
+      "description": "List all issues",
+      "params": [
+        {
+          "name": "limit",
+          "description": "Maximum number of issues to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "get_issue",
+      "method": "GET",
+      "path": "/issues/:id",
+      "description": "Get an issue by ID",
+      "params": [
+        {
+          "name": "id",
+          "description": "Issue ID",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "list_teams",
+      "method": "GET",
+      "path": "/teams",
+      "description": "List all teams"
+    },
+    {
+      "name": "list_projects",
+      "method": "GET",
+      "path": "/projects",
+      "description": "List all projects",
+      "params": [
+        {
+          "name": "limit",
+          "description": "Maximum number of projects to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        }
+      ]
+    }
+  ]
+}

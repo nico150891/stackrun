@@ -1,0 +1,68 @@
+{
+  "name": "slack",
+  "version": "1.0.0",
+  "description": "Slack messaging API",
+  "base_url": "https://slack.com/api",
+  "auth": {
+    "type": "bearer",
+    "header": "Authorization",
+    "prefix": "Bearer"
+  },
+  "commands": [
+    {
+      "name": "post_message",
+      "method": "POST",
+      "path": "/chat.postMessage",
+      "description": "Send a message to a channel",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": [
+        {
+          "name": "channel",
+          "description": "Channel ID to send message to",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "text",
+          "description": "Message text",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "list_channels",
+      "method": "GET",
+      "path": "/conversations.list",
+      "description": "List all channels in the workspace",
+      "params": [
+        {
+          "name": "limit",
+          "description": "Maximum number of channels to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "list_users",
+      "method": "GET",
+      "path": "/users.list",
+      "description": "List all users in the workspace",
+      "params": [
+        {
+          "name": "limit",
+          "description": "Maximum number of users to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        }
+      ]
+    }
+  ]
+}
