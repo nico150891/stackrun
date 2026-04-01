@@ -1,5 +1,3 @@
-import type { ToolManifest, ToolCommand, CommandParam } from '../types/manifest.js';
-
 export interface ValidationError {
   field: string;
   received: unknown;
@@ -120,7 +118,9 @@ export function validateManifest(data: Record<string, unknown>): ValidationError
   if (!Array.isArray(data.commands) || data.commands.length === 0) {
     errors.push({
       field: 'commands',
-      received: Array.isArray(data.commands) ? `array with ${data.commands.length} items` : data.commands,
+      received: Array.isArray(data.commands)
+        ? `array with ${data.commands.length} items`
+        : data.commands,
       expected: 'non-empty array of commands',
     });
   } else {
@@ -134,7 +134,10 @@ export function validateManifest(data: Record<string, unknown>): ValidationError
 }
 
 /** Validates a single command definition. */
-export function validateCommand(cmd: Record<string, unknown>, index: number = 0): ValidationError[] {
+export function validateCommand(
+  cmd: Record<string, unknown>,
+  index: number = 0,
+): ValidationError[] {
   const errors: ValidationError[] = [];
   const prefix = `commands[${index}]`;
 

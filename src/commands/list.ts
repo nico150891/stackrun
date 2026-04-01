@@ -6,10 +6,13 @@ export const listCommand = new Command('list')
   .description('List locally installed tools')
   .option('--json', 'Output results as JSON to stdout')
   .option('--agent', 'Machine-readable output (no spinners, no color)')
-  .addHelpText('after', `
+  .addHelpText(
+    'after',
+    `
 Examples:
   $ stackrun list          # show installed tools
-  $ stackrun list --json   # JSON output for scripting`)
+  $ stackrun list --json   # JSON output for scripting`,
+  )
   .action(async (options: { json?: boolean; agent?: boolean }) => {
     try {
       const tools = await readInstalledTools();

@@ -15,7 +15,11 @@ import { mcpCommand } from './commands/mcp.js';
 // Global error handler — friendly message instead of stack trace
 process.on('uncaughtException', (err) => {
   console.error(chalk.red('Unexpected error:'), err.message);
-  console.error(chalk.gray('If this persists, please report it at https://github.com/nico150891/stackrun/issues'));
+  console.error(
+    chalk.gray(
+      'If this persists, please report it at https://github.com/nico150891/stackrun/issues',
+    ),
+  );
   process.exit(1);
 });
 

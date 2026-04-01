@@ -165,7 +165,9 @@ async function startCallbackServer(
 
     const timer = setTimeout(() => {
       server.close();
-      rejectCode(new Error(`OAuth2 flow timed out after ${timeout / 1000}s. No callback received.`));
+      rejectCode(
+        new Error(`OAuth2 flow timed out after ${timeout / 1000}s. No callback received.`),
+      );
     }, timeout);
 
     const waitForCode = (): Promise<string> =>

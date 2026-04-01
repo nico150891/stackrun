@@ -104,7 +104,11 @@ export async function executeCommand(options: ExecuteOptions): Promise<ExecuteRe
   } catch (err) {
     if (err instanceof AxiosError && err.response) {
       const status = err.response.status;
-      throw new HttpApiError(status, formatHttpError(status, manifest.name, path), err.response.data);
+      throw new HttpApiError(
+        status,
+        formatHttpError(status, manifest.name, path),
+        err.response.data,
+      );
     }
     if (err instanceof AxiosError) {
       if (err.code === 'ENOTFOUND' || err.code === 'ECONNREFUSED') {

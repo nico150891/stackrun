@@ -9,12 +9,15 @@ export const searchCommand = new Command('search')
   .argument('[query]', 'Filter tools by name or description')
   .option('--json', 'Output results as JSON to stdout')
   .option('--agent', 'Machine-readable output (no spinners, no color)')
-  .addHelpText('after', `
+  .addHelpText(
+    'after',
+    `
 Examples:
   $ stackrun search stripe      # search by name
   $ stackrun search payments    # search by description
   $ stackrun search             # list all tools
-  $ stackrun search --json      # JSON output for scripting`)
+  $ stackrun search --json      # JSON output for scripting`,
+  )
   .action(async (query: string | undefined, options: { json?: boolean; agent?: boolean }) => {
     const isJson = options.json || options.agent || !process.stdout.isTTY;
     const spinner = isJson ? null : ora('Fetching registry...').start();
@@ -40,7 +43,9 @@ Examples:
       }
 
       if (results.length === 0) {
-        console.error(chalk.yellow(query ? `No tools found matching "${query}".` : 'Registry is empty.'));
+        console.error(
+          chalk.yellow(query ? `No tools found matching "${query}".` : 'Registry is empty.'),
+        );
         return;
       }
 
@@ -48,9 +53,7 @@ Examples:
       const nameWidth = 20;
       const versionWidth = 10;
       console.error(
-        chalk.bold(
-          `${'Name'.padEnd(nameWidth)}${'Version'.padEnd(versionWidth)}Description`,
-        ),
+        chalk.bold(`${'Name'.padEnd(nameWidth)}${'Version'.padEnd(versionWidth)}Description`),
       );
       console.error(chalk.gray('─'.repeat(60)));
 

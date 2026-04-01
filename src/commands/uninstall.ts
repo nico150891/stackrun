@@ -1,7 +1,12 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { createInterface } from 'node:readline';
-import { readToolManifest, removeToolManifest, readTokens, writeTokens } from '../services/storage.js';
+import {
+  readToolManifest,
+  removeToolManifest,
+  readTokens,
+  writeTokens,
+} from '../services/storage.js';
 
 /** Prompts user for yes/no confirmation via stdin */
 async function confirm(message: string): Promise<boolean> {
@@ -22,11 +27,14 @@ export const uninstallCommand = new Command('uninstall')
   .argument('<tool>', 'Tool name to uninstall')
   .option('--remove-token', 'Also remove the stored token for this tool')
   .option('--yes', 'Skip confirmation prompt')
-  .addHelpText('after', `
+  .addHelpText(
+    'after',
+    `
 Examples:
   $ stackrun uninstall stripe                  # remove tool (with confirmation)
   $ stackrun uninstall stripe --yes            # skip confirmation
-  $ stackrun uninstall stripe --remove-token   # also remove stored token`)
+  $ stackrun uninstall stripe --remove-token   # also remove stored token`,
+  )
   .action(async (tool: string, options: { removeToken?: boolean; yes?: boolean }) => {
     const manifest = await readToolManifest(tool);
     if (!manifest) {
@@ -36,9 +44,7 @@ Examples:
     }
 
     if (!options.yes) {
-      const confirmed = await confirm(
-        `Uninstall ${chalk.cyan(tool)} v${manifest.version}?`,
-      );
+      const confirmed = await confirm(`Uninstall ${chalk.cyan(tool)} v${manifest.version}?`);
       if (!confirmed) {
         console.error(chalk.yellow('Cancelled.'));
         return;

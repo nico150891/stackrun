@@ -5,7 +5,9 @@ import { executeCommand, HttpApiError } from '../services/executor.js';
 import type { ToolManifest, ToolCommand } from '../types/manifest.js';
 
 /** Parses an MCP tool name like "stripe_list_customers" into tool + command */
-export function parseMcpToolName(mcpToolName: string): { toolName: string; commandName: string } | null {
+export function parseMcpToolName(
+  mcpToolName: string,
+): { toolName: string; commandName: string } | null {
   const separatorIndex = mcpToolName.indexOf('_');
   if (separatorIndex === -1) return null;
 
@@ -54,7 +56,12 @@ export async function handleToolCall(
   if (!manifest) {
     return {
       isError: true,
-      content: [{ type: 'text', text: `Tool "${parsed.toolName}" is not installed. Run: stackrun install ${parsed.toolName}` }],
+      content: [
+        {
+          type: 'text',
+          text: `Tool "${parsed.toolName}" is not installed. Run: stackrun install ${parsed.toolName}`,
+        },
+      ],
     };
   }
 
@@ -62,7 +69,9 @@ export async function handleToolCall(
   if (!command) {
     return {
       isError: true,
-      content: [{ type: 'text', text: `Command "${parsed.commandName}" not found in ${manifest.name}` }],
+      content: [
+        { type: 'text', text: `Command "${parsed.commandName}" not found in ${manifest.name}` },
+      ],
     };
   }
 
@@ -72,7 +81,12 @@ export async function handleToolCall(
     if (!token) {
       return {
         isError: true,
-        content: [{ type: 'text', text: `No token stored for ${manifest.name}. Run: stackrun login ${manifest.name}` }],
+        content: [
+          {
+            type: 'text',
+            text: `No token stored for ${manifest.name}. Run: stackrun login ${manifest.name}`,
+          },
+        ],
       };
     }
     return executeAndFormat(manifest, command, args, token);

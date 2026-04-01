@@ -9,18 +9,19 @@ export const installCommand = new Command('install')
   .description('Install a tool from the registry')
   .argument('<tool>', 'Tool name to install')
   .option('--force', 'Overwrite if already installed')
-  .addHelpText('after', `
+  .addHelpText(
+    'after',
+    `
 Examples:
   $ stackrun install stripe          # install from registry
-  $ stackrun install stripe --force  # reinstall/update`)
+  $ stackrun install stripe --force  # reinstall/update`,
+  )
   .action(async (tool: string, options: { force?: boolean }) => {
     // Check if already installed
     if (!options.force) {
       const existing = await readToolManifest(tool);
       if (existing) {
-        console.error(
-          chalk.yellow(`Tool "${tool}" is already installed (v${existing.version}).`),
-        );
+        console.error(chalk.yellow(`Tool "${tool}" is already installed (v${existing.version}).`));
         console.error(chalk.yellow('Use --force to overwrite.'));
         process.exitCode = 1;
         return;

@@ -20,8 +20,7 @@ async function promptToken(toolName: string): Promise<string> {
 /** Opens a URL in the default browser (safe — no shell interpolation) */
 function openBrowser(url: string): void {
   const platform = process.platform;
-  const cmd =
-    platform === 'darwin' ? 'open' : platform === 'win32' ? 'start' : 'xdg-open';
+  const cmd = platform === 'darwin' ? 'open' : platform === 'win32' ? 'start' : 'xdg-open';
   execFile(cmd, [url], (err) => {
     if (err) {
       // Non-fatal: user can open the URL manually (it's printed to stderr)
@@ -36,58 +35,68 @@ export const loginCommand = new Command('login')
   .option('--client-id <id>', 'OAuth2 client ID (overrides manifest)')
   .option('--client-secret <secret>', 'OAuth2 client secret')
   .option('--port <port>', 'Port for OAuth2 callback server (default: random)')
-  .addHelpText('after', `
+  .addHelpText(
+    'after',
+    `
 Examples:
   $ stackrun login stripe                       # interactive prompt
   $ stackrun login stripe --token sk_test_xxx   # provide token directly
   $ stackrun login google                       # opens browser for OAuth2
-  $ stackrun login google --client-id xxx --client-secret yyy`)
-  .action(async (tool: string, options: { token?: string; clientId?: string; clientSecret?: string; port?: string }) => {
-    const manifest = await readToolManifest(tool);
-    if (!manifest) {
-      console.error(chalk.red(`Error: tool "${tool}" is not installed.`));
-      console.error(chalk.gray(`Run: stackrun install ${tool}`));
-      process.exitCode = 1;
-      return;
-    }
-
-    if (manifest.auth.type === 'none') {
-      console.error(chalk.yellow(`Tool "${tool}" does not require authentication.`));
-      return;
-    }
-
-    // Warn if token already exists
-    const existing = await hasToken(tool);
-    if (existing) {
-      console.error(chalk.yellow(`Token for "${tool}" already exists. It will be overwritten.`));
-    }
-
-    // OAuth2 flow
-    if (manifest.auth.type === 'oauth2') {
-      await handleOAuth2Login(tool, manifest.auth, options);
-      return;
-    }
-
-    // API key / bearer flow
-    let token = options.token;
-    if (!token) {
-      if (!process.stdin.isTTY) {
-        console.error(chalk.red('Error: no token provided. Use --token <value> in non-interactive mode.'));
+  $ stackrun login google --client-id xxx --client-secret yyy`,
+  )
+  .action(
+    async (
+      tool: string,
+      options: { token?: string; clientId?: string; clientSecret?: string; port?: string },
+    ) => {
+      const manifest = await readToolManifest(tool);
+      if (!manifest) {
+        console.error(chalk.red(`Error: tool "${tool}" is not installed.`));
+        console.error(chalk.gray(`Run: stackrun install ${tool}`));
         process.exitCode = 1;
         return;
       }
-      token = await promptToken(tool);
-    }
 
-    if (!token) {
-      console.error(chalk.red('Error: token cannot be empty.'));
-      process.exitCode = 1;
-      return;
-    }
+      if (manifest.auth.type === 'none') {
+        console.error(chalk.yellow(`Tool "${tool}" does not require authentication.`));
+        return;
+      }
 
-    await saveToken(tool, token);
-    console.error(chalk.green(`Token saved for "${tool}".`));
-  });
+      // Warn if token already exists
+      const existing = await hasToken(tool);
+      if (existing) {
+        console.error(chalk.yellow(`Token for "${tool}" already exists. It will be overwritten.`));
+      }
+
+      // OAuth2 flow
+      if (manifest.auth.type === 'oauth2') {
+        await handleOAuth2Login(tool, manifest.auth, options);
+        return;
+      }
+
+      // API key / bearer flow
+      let token = options.token;
+      if (!token) {
+        if (!process.stdin.isTTY) {
+          console.error(
+            chalk.red('Error: no token provided. Use --token <value> in non-interactive mode.'),
+          );
+          process.exitCode = 1;
+          return;
+        }
+        token = await promptToken(tool);
+      }
+
+      if (!token) {
+        console.error(chalk.red('Error: token cannot be empty.'));
+        process.exitCode = 1;
+        return;
+      }
+
+      await saveToken(tool, token);
+      console.error(chalk.green(`Token saved for "${tool}".`));
+    },
+  );
 
 /** Handles the OAuth2 browser-based login flow */
 async function handleOAuth2Login(
@@ -100,7 +109,11 @@ async function handleOAuth2Login(
 
   if (!clientId) {
     console.error(chalk.red('Error: OAuth2 requires a client_id.'));
-    console.error(chalk.gray('Provide it via --client-id, STACKRUN_OAUTH_CLIENT_ID env var, or in the manifest.'));
+    console.error(
+      chalk.gray(
+        'Provide it via --client-id, STACKRUN_OAUTH_CLIENT_ID env var, or in the manifest.',
+      ),
+    );
     process.exitCode = 1;
     return;
   }

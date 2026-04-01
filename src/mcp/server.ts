@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { readInstalledTools, readToolManifest } from '../services/storage.js';
 import { handleToolCall } from './handler.js';
-import type { ToolManifest, CommandParam } from '../types/manifest.js';
+import type { CommandParam } from '../types/manifest.js';
 
 /** Return type of registerTool — has remove(), update(), enable(), disable() */
 type RegisteredTool = ReturnType<McpServer['registerTool']>;
@@ -49,7 +49,9 @@ export function watchToolsDirectory(server: McpServer): void {
       if (debounceTimer) clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         syncTools(server).catch((err) => {
-          console.error(`[stackrun] Error syncing tools: ${err instanceof Error ? err.message : err}`);
+          console.error(
+            `[stackrun] Error syncing tools: ${err instanceof Error ? err.message : err}`,
+          );
         });
       }, 300);
     });
@@ -135,7 +137,10 @@ function registerSchemaResource(server: McpServer): void {
   server.registerResource(
     'tool-schema',
     template,
-    { description: 'Schema of an installed Stackrun tool (manifest JSON)', mimeType: 'application/json' },
+    {
+      description: 'Schema of an installed Stackrun tool (manifest JSON)',
+      mimeType: 'application/json',
+    },
     async (uri, variables) => {
       const toolName = variables.tool_name as string;
       const manifest = await readToolManifest(toolName);

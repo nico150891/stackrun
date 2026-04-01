@@ -1,10 +1,8 @@
 import axios, { AxiosError } from 'axios';
-import chalk from 'chalk';
 import { readConfig } from './storage.js';
 import type { RegistryIndex, ToolManifest } from '../types/manifest.js';
 
-const DEFAULT_REGISTRY_URL =
-  'https://raw.githubusercontent.com/nico150891/stackrun/main/registry';
+const DEFAULT_REGISTRY_URL = 'https://raw.githubusercontent.com/nico150891/stackrun/main/registry';
 
 /**
  * Resolves the registry base URL.

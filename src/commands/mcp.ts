@@ -7,10 +7,13 @@ import { readInstalledTools } from '../services/storage.js';
 export const mcpCommand = new Command('mcp')
   .description('Start the Stackrun MCP server (stdio transport)')
   .option('--list', 'List tools that would be exposed via MCP, then exit')
-  .addHelpText('after', `
+  .addHelpText(
+    'after',
+    `
 Examples:
   $ stackrun mcp              # start the MCP server
-  $ stackrun mcp --list       # preview exposed MCP tools`)
+  $ stackrun mcp --list       # preview exposed MCP tools`,
+  )
   .action(async (options: { list?: boolean }) => {
     if (options.list) {
       await listMcpTools();
@@ -50,9 +53,13 @@ async function listMcpTools(): Promise<void> {
 
   let total = 0;
   for (const manifest of manifests) {
-    console.error(chalk.bold.cyan(manifest.name) + chalk.gray(` (${manifest.commands.length} commands)`));
+    console.error(
+      chalk.bold.cyan(manifest.name) + chalk.gray(` (${manifest.commands.length} commands)`),
+    );
     for (const cmd of manifest.commands) {
-      console.error(`  ${chalk.white(`${manifest.name}_${cmd.name}`)} — ${chalk.gray(cmd.description)}`);
+      console.error(
+        `  ${chalk.white(`${manifest.name}_${cmd.name}`)} — ${chalk.gray(cmd.description)}`,
+      );
       total++;
     }
     console.error('');

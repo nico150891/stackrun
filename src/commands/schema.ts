@@ -8,10 +8,13 @@ export const schemaCommand = new Command('schema')
   .argument('<tool>', 'Tool name')
   .option('--json', 'Output manifest as JSON to stdout')
   .option('--agent', 'Machine-readable output (no spinners, no color)')
-  .addHelpText('after', `
+  .addHelpText(
+    'after',
+    `
 Examples:
   $ stackrun schema stripe          # show available commands
-  $ stackrun schema stripe --json   # output raw manifest as JSON`)
+  $ stackrun schema stripe --json   # output raw manifest as JSON`,
+  )
   .action(async (tool: string, options: { json?: boolean; agent?: boolean }) => {
     const manifest = await readToolManifest(tool);
     if (!manifest) {
@@ -42,7 +45,12 @@ Examples:
     );
 
     if (manifest.headers && Object.keys(manifest.headers).length > 0) {
-      console.error(chalk.bold('Headers:   ') + Object.entries(manifest.headers).map(([k, v]) => `${k}: ${v}`).join(', '));
+      console.error(
+        chalk.bold('Headers:   ') +
+          Object.entries(manifest.headers)
+            .map(([k, v]) => `${k}: ${v}`)
+            .join(', '),
+      );
     }
 
     console.error('');
@@ -61,8 +69,8 @@ Examples:
       console.error(`  ${chalk.gray(cmd.description)}`);
 
       if (paramCount > 0) {
-        const paramList = cmd.params!
-          .map((p) => {
+        const paramList = cmd
+          .params!.map((p) => {
             const req = p.required ? chalk.red('*') : '';
             return `${p.name}${req} (${p.location}, ${p.type})`;
           })
