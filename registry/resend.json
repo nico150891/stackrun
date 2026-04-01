@@ -1,0 +1,86 @@
+{
+  "name": "resend",
+  "version": "1.0.0",
+  "description": "Resend email API",
+  "base_url": "https://api.resend.com",
+  "auth": {
+    "type": "bearer",
+    "header": "Authorization",
+    "prefix": "Bearer"
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "commands": [
+    {
+      "name": "send_email",
+      "method": "POST",
+      "path": "/emails",
+      "description": "Send a transactional email",
+      "params": [
+        {
+          "name": "from",
+          "description": "Sender email address (e.g. you@example.com)",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "to",
+          "description": "Recipient email address",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "subject",
+          "description": "Email subject line",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "html",
+          "description": "Email body as HTML",
+          "required": false,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "text",
+          "description": "Email body as plain text",
+          "required": false,
+          "location": "body",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "get_email",
+      "method": "GET",
+      "path": "/emails/:email_id",
+      "description": "Get details of a sent email",
+      "params": [
+        {
+          "name": "email_id",
+          "description": "Email ID returned from send_email",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "list_domains",
+      "method": "GET",
+      "path": "/domains",
+      "description": "List all verified domains"
+    },
+    {
+      "name": "list_api_keys",
+      "method": "GET",
+      "path": "/api-keys",
+      "description": "List all API keys"
+    }
+  ]
+}

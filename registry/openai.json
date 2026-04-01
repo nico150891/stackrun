@@ -1,0 +1,131 @@
+{
+  "name": "openai",
+  "version": "1.0.0",
+  "description": "OpenAI API for GPT, DALL-E, and more",
+  "base_url": "https://api.openai.com/v1",
+  "auth": {
+    "type": "bearer",
+    "header": "Authorization",
+    "prefix": "Bearer"
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "commands": [
+    {
+      "name": "list_models",
+      "method": "GET",
+      "path": "/models",
+      "description": "List all available models"
+    },
+    {
+      "name": "get_model",
+      "method": "GET",
+      "path": "/models/:model_id",
+      "description": "Get details of a specific model",
+      "params": [
+        {
+          "name": "model_id",
+          "description": "Model ID (e.g. gpt-4o, gpt-4o-mini)",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "create_chat_completion",
+      "method": "POST",
+      "path": "/chat/completions",
+      "description": "Create a chat completion (send a message to GPT)",
+      "params": [
+        {
+          "name": "model",
+          "description": "Model ID to use (e.g. gpt-4o, gpt-4o-mini)",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "message",
+          "description": "User message to send",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "temperature",
+          "description": "Sampling temperature (0-2, lower = more deterministic)",
+          "required": false,
+          "location": "body",
+          "type": "number"
+        },
+        {
+          "name": "max_tokens",
+          "description": "Maximum tokens in the response",
+          "required": false,
+          "location": "body",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "create_embedding",
+      "method": "POST",
+      "path": "/embeddings",
+      "description": "Create text embeddings",
+      "params": [
+        {
+          "name": "model",
+          "description": "Embedding model ID (e.g. text-embedding-3-small)",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "input",
+          "description": "Text to embed",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "create_image",
+      "method": "POST",
+      "path": "/images/generations",
+      "description": "Generate images with DALL-E",
+      "params": [
+        {
+          "name": "prompt",
+          "description": "Text description of the image to generate",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "model",
+          "description": "Image model (dall-e-2 or dall-e-3)",
+          "required": false,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "size",
+          "description": "Image size (1024x1024, 1792x1024, or 1024x1792)",
+          "required": false,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "n",
+          "description": "Number of images to generate",
+          "required": false,
+          "location": "body",
+          "type": "number"
+        }
+      ]
+    }
+  ]
+}

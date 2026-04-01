@@ -1,0 +1,118 @@
+{
+  "name": "twilio",
+  "version": "1.0.0",
+  "description": "Twilio communications API",
+  "base_url": "https://api.twilio.com/2010-04-01",
+  "auth": {
+    "type": "api_key",
+    "header": "Authorization",
+    "prefix": "Basic"
+  },
+  "commands": [
+    {
+      "name": "send_sms",
+      "method": "POST",
+      "path": "/Accounts/:account_sid/Messages.json",
+      "description": "Send an SMS message",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": [
+        {
+          "name": "account_sid",
+          "description": "Your Twilio Account SID",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        },
+        {
+          "name": "To",
+          "description": "Destination phone number (E.164 format, e.g. +1234567890)",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "From",
+          "description": "Your Twilio phone number (E.164 format)",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "Body",
+          "description": "The text content of the SMS",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "list_messages",
+      "method": "GET",
+      "path": "/Accounts/:account_sid/Messages.json",
+      "description": "List sent and received messages",
+      "params": [
+        {
+          "name": "account_sid",
+          "description": "Your Twilio Account SID",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        },
+        {
+          "name": "PageSize",
+          "description": "Number of messages to return (max 1000)",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "get_message",
+      "method": "GET",
+      "path": "/Accounts/:account_sid/Messages/:sid.json",
+      "description": "Get details of a specific message",
+      "params": [
+        {
+          "name": "account_sid",
+          "description": "Your Twilio Account SID",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        },
+        {
+          "name": "sid",
+          "description": "The message SID (e.g. SMxxxxx)",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "list_calls",
+      "method": "GET",
+      "path": "/Accounts/:account_sid/Calls.json",
+      "description": "List phone calls",
+      "params": [
+        {
+          "name": "account_sid",
+          "description": "Your Twilio Account SID",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        },
+        {
+          "name": "PageSize",
+          "description": "Number of calls to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        }
+      ]
+    }
+  ]
+}

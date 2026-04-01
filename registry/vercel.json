@@ -1,0 +1,110 @@
+{
+  "name": "vercel",
+  "version": "1.0.0",
+  "description": "Vercel deployment platform API",
+  "base_url": "https://api.vercel.com",
+  "auth": {
+    "type": "bearer",
+    "header": "Authorization",
+    "prefix": "Bearer"
+  },
+  "commands": [
+    {
+      "name": "list_projects",
+      "method": "GET",
+      "path": "/v9/projects",
+      "description": "List all projects",
+      "params": [
+        {
+          "name": "limit",
+          "description": "Maximum number of projects to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "get_project",
+      "method": "GET",
+      "path": "/v9/projects/:project_id",
+      "description": "Get details of a specific project",
+      "params": [
+        {
+          "name": "project_id",
+          "description": "Project ID or name",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "list_deployments",
+      "method": "GET",
+      "path": "/v6/deployments",
+      "description": "List recent deployments",
+      "params": [
+        {
+          "name": "limit",
+          "description": "Maximum number of deployments to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        },
+        {
+          "name": "projectId",
+          "description": "Filter by project ID",
+          "required": false,
+          "location": "query",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "get_deployment",
+      "method": "GET",
+      "path": "/v13/deployments/:deployment_id",
+      "description": "Get details of a specific deployment",
+      "params": [
+        {
+          "name": "deployment_id",
+          "description": "Deployment ID or URL",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "list_domains",
+      "method": "GET",
+      "path": "/v5/domains",
+      "description": "List all domains",
+      "params": [
+        {
+          "name": "limit",
+          "description": "Maximum number of domains to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "list_env_vars",
+      "method": "GET",
+      "path": "/v9/projects/:project_id/env",
+      "description": "List environment variables for a project",
+      "params": [
+        {
+          "name": "project_id",
+          "description": "Project ID or name",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "name": "cloudflare",
+  "version": "1.0.0",
+  "description": "Cloudflare API for DNS, Workers, and more",
+  "base_url": "https://api.cloudflare.com/client/v4",
+  "auth": {
+    "type": "bearer",
+    "header": "Authorization",
+    "prefix": "Bearer"
+  },
+  "commands": [
+    {
+      "name": "verify_token",
+      "method": "GET",
+      "path": "/user/tokens/verify",
+      "description": "Verify that the API token is valid"
+    },
+    {
+      "name": "list_zones",
+      "method": "GET",
+      "path": "/zones",
+      "description": "List all zones (domains) in the account",
+      "params": [
+        {
+          "name": "per_page",
+          "description": "Number of zones per page (max 50)",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        },
+        {
+          "name": "name",
+          "description": "Filter by domain name",
+          "required": false,
+          "location": "query",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "list_dns_records",
+      "method": "GET",
+      "path": "/zones/:zone_id/dns_records",
+      "description": "List DNS records for a zone",
+      "params": [
+        {
+          "name": "zone_id",
+          "description": "Zone ID",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        },
+        {
+          "name": "type",
+          "description": "Filter by record type (A, AAAA, CNAME, TXT, etc.)",
+          "required": false,
+          "location": "query",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "description": "Filter by record name",
+          "required": false,
+          "location": "query",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "create_dns_record",
+      "method": "POST",
+      "path": "/zones/:zone_id/dns_records",
+      "description": "Create a new DNS record",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": [
+        {
+          "name": "zone_id",
+          "description": "Zone ID",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        },
+        {
+          "name": "type",
+          "description": "Record type (A, AAAA, CNAME, TXT, MX, etc.)",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "description": "DNS record name (e.g. example.com or sub.example.com)",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "content",
+          "description": "Record content (IP address, hostname, etc.)",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "proxied",
+          "description": "Whether the record is proxied through Cloudflare",
+          "required": false,
+          "location": "body",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "list_workers",
+      "method": "GET",
+      "path": "/accounts/:account_id/workers/scripts",
+      "description": "List Workers scripts in the account",
+      "params": [
+        {
+          "name": "account_id",
+          "description": "Cloudflare account ID",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        }
+      ]
+    }
+  ]
+}

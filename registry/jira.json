@@ -1,0 +1,111 @@
+{
+  "name": "jira",
+  "version": "1.0.0",
+  "description": "Jira project management API",
+  "base_url": "https://your-domain.atlassian.net/rest/api/3",
+  "auth": {
+    "type": "api_key",
+    "header": "Authorization",
+    "prefix": "Basic"
+  },
+  "headers": {
+    "Accept": "application/json"
+  },
+  "commands": [
+    {
+      "name": "search_issues",
+      "method": "GET",
+      "path": "/search",
+      "description": "Search issues using JQL",
+      "params": [
+        {
+          "name": "jql",
+          "description": "JQL query string (e.g. 'project = PROJ AND status = Open')",
+          "required": true,
+          "location": "query",
+          "type": "string"
+        },
+        {
+          "name": "maxResults",
+          "description": "Maximum number of results to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        },
+        {
+          "name": "fields",
+          "description": "Comma-separated list of fields to return (e.g. 'summary,status,assignee')",
+          "required": false,
+          "location": "query",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "get_issue",
+      "method": "GET",
+      "path": "/issue/:issue_key",
+      "description": "Get a specific issue by key (e.g. PROJ-123)",
+      "params": [
+        {
+          "name": "issue_key",
+          "description": "Issue key (e.g. PROJ-123)",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "create_issue",
+      "method": "POST",
+      "path": "/issue",
+      "description": "Create a new issue",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": [
+        {
+          "name": "project_key",
+          "description": "Project key (e.g. PROJ)",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "summary",
+          "description": "Issue summary/title",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "issuetype",
+          "description": "Issue type name (e.g. Task, Bug, Story)",
+          "required": true,
+          "location": "body",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "description": "Issue description text",
+          "required": false,
+          "location": "body",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "list_projects",
+      "method": "GET",
+      "path": "/project",
+      "description": "List all accessible projects"
+    },
+    {
+      "name": "get_myself",
+      "method": "GET",
+      "path": "/myself",
+      "description": "Get the current authenticated user"
+    }
+  ]
+}

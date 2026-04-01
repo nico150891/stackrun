@@ -34,6 +34,41 @@
       "name": "linear",
       "description": "Linear project management API",
       "version": "1.0.0"
+    },
+    {
+      "name": "twilio",
+      "description": "Twilio communications API",
+      "version": "1.0.0"
+    },
+    {
+      "name": "jira",
+      "description": "Jira project management API",
+      "version": "1.0.0"
+    },
+    {
+      "name": "resend",
+      "description": "Resend email API",
+      "version": "1.0.0"
+    },
+    {
+      "name": "vercel",
+      "description": "Vercel deployment platform API",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cloudflare",
+      "description": "Cloudflare API for DNS, Workers, and more",
+      "version": "1.0.0"
+    },
+    {
+      "name": "openai",
+      "description": "OpenAI API for GPT, DALL-E, and more",
+      "version": "1.0.0"
+    },
+    {
+      "name": "google",
+      "description": "Google APIs (Gmail, Calendar, Drive)",
+      "version": "1.0.0"
     }
   ]
 }
