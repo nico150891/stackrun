@@ -6,6 +6,14 @@
   "bin": {
     "stackrun": "dist/index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nico150891/stackrun.git"
+  },
+  "homepage": "https://github.com/nico150891/stackrun",
+  "bugs": {
+    "url": "https://github.com/nico150891/stackrun/issues"
+  },
   "publishConfig": {
     "access": "public"
   },
