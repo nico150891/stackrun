@@ -1,5 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import type { ToolManifest, ToolCommand } from '../types/manifest.js';
+import { getOAuthTokenData, isTokenExpired, saveOAuthToken } from './auth.js';
+import { refreshAccessToken } from './oauth.js';
 
 export interface ExecuteOptions {
   manifest: ToolManifest;
@@ -16,7 +18,13 @@ export interface ExecuteResult {
 
 /** Executes an HTTP call based on a manifest command definition */
 export async function executeCommand(options: ExecuteOptions): Promise<ExecuteResult> {
-  const { manifest, command, params, token } = options;
+  const { manifest, command, params } = options;
+  let { token } = options;
+
+  // Auto-refresh expired OAuth2 tokens
+  if (manifest.auth.type === 'oauth2' && token) {
+    token = await maybeRefreshToken(manifest, token);
+  }
 
   // Build path with param replacement
   let path = command.path;
@@ -68,9 +76,13 @@ export async function executeCommand(options: ExecuteOptions): Promise<ExecuteRe
     ...(command.headers ?? {}),
   };
 
-  if (token && manifest.auth.type !== 'none' && manifest.auth.header) {
-    const prefix = manifest.auth.prefix ? `${manifest.auth.prefix} ` : '';
-    headers[manifest.auth.header] = `${prefix}${token}`;
+  if (token && manifest.auth.type !== 'none') {
+    if (manifest.auth.type === 'oauth2') {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else if (manifest.auth.header) {
+      const prefix = manifest.auth.prefix ? `${manifest.auth.prefix} ` : '';
+      headers[manifest.auth.header] = `${prefix}${token}`;
+    }
   }
 
   try {
@@ -115,6 +127,36 @@ export class HttpApiError extends Error {
     super(message);
     this.name = 'HttpApiError';
   }
+}
+
+/** Checks if an OAuth2 token is expired and refreshes it if possible */
+async function maybeRefreshToken(manifest: ToolManifest, currentToken: string): Promise<string> {
+  const oauthData = await getOAuthTokenData(manifest.name);
+  if (!oauthData) return currentToken;
+  if (!isTokenExpired(oauthData)) return currentToken;
+
+  if (!oauthData.refresh_token || !manifest.auth.token_url) {
+    throw new HttpApiError(
+      401,
+      `Token expired for ${manifest.name}. Run: stackrun login ${manifest.name}`,
+      null,
+    );
+  }
+
+  const clientId = manifest.auth.client_id ?? process.env.STACKRUN_OAUTH_CLIENT_ID;
+  if (!clientId) {
+    throw new Error(`Cannot refresh token: no client_id. Run: stackrun login ${manifest.name}`);
+  }
+
+  const newData = await refreshAccessToken(
+    manifest.auth.token_url,
+    oauthData.refresh_token,
+    clientId,
+    process.env.STACKRUN_OAUTH_CLIENT_SECRET,
+  );
+
+  await saveOAuthToken(manifest.name, newData);
+  return newData.access_token;
 }
 
 /** Maps HTTP status codes to user-friendly messages */

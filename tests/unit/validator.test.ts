@@ -52,7 +52,7 @@ describe('Validator Service', () => {
     it('should reject invalid auth type', () => {
       const errors = validateManifest({
         ...validManifest,
-        auth: { type: 'oauth2' },
+        auth: { type: 'magic_token' },
       });
       expect(errors.some((e) => e.field === 'auth.type')).toBe(true);
     });

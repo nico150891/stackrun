@@ -1,11 +1,25 @@
-/** Supported authentication types for MVP */
-export type AuthType = 'none' | 'api_key' | 'bearer';
+/** Supported authentication types */
+export type AuthType = 'none' | 'api_key' | 'bearer' | 'oauth2';
 
 /** Authentication configuration for a SaaS tool */
 export interface AuthConfig {
   type: AuthType;
   header?: string;
   prefix?: string;
+  /** OAuth2-specific fields (required when type is 'oauth2') */
+  auth_url?: string;
+  token_url?: string;
+  scopes?: string[];
+  /** OAuth2 client_id — public, safe to include in manifest */
+  client_id?: string;
+}
+
+/** Stored OAuth2 token data (in tokens.json) */
+export interface OAuthTokenData {
+  access_token: string;
+  refresh_token?: string;
+  expires_at?: number;
+  token_type?: string;
 }
 
 /** A single API command exposed by a tool */

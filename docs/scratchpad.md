@@ -177,3 +177,64 @@ Session notes and discoveries go here.
 ### Test coverage (cumulative)
 - 5 syncTools tests (add new, remove stale, idempotent, empty→tools, tools→empty)
 - Total: 102 tests passing
+
+---
+
+## 2026-04-01 — Phase 6 Release & Validation
+
+### Release
+- Bumped version to 0.2.0 (package.json, index.ts, mcp/server.ts)
+- Tagged v0.2.0, pushed to GitHub, published to npm as `@nico0891/stackrun@0.2.0`
+- Fixed `.npmignore` to exclude `*-test-key.txt` files from tarball
+- npm publish required granular access token with bypass 2FA (classic automation tokens no longer sufficient)
+
+### Real agent validation (Claude Code + MCP)
+- Registered MCP server: `claude mcp add --scope user stackrun -- node dist/index.js mcp`
+- **Stripe**: `stripe_list_customers` via MCP → returned 1 customer (cus_UFs3k870ReyZ2Q, test@stackrun.dev)
+- **GitHub**: `github_get_user` via MCP → returned profile (nico150891, Nicolás Leiva)
+- Multi-tool confirmed: both Stripe and GitHub tools available simultaneously in the same MCP session
+- MCP protocol working end-to-end: initialize → tools/list → tools/call → structured JSON response
+
+---
+
+## 2026-04-01 — Phase 7 Complete
+
+### 7A — Registry Expansion
+- 7 new manifests added (6 api_key/bearer + 1 OAuth2):
+  - **Twilio** — send_sms, list_messages, get_message, list_calls (Basic auth, path params for account_sid)
+  - **Jira** — search_issues (JQL), get_issue, create_issue, list_projects, get_myself (Basic auth, Atlassian API)
+  - **Resend** — send_email, get_email, list_domains, list_api_keys (Bearer auth)
+  - **Vercel** — list_projects, get_project, list_deployments, get_deployment, list_domains, list_env_vars (Bearer auth)
+  - **Cloudflare** — verify_token, list_zones, list_dns_records, create_dns_record, list_workers (Bearer auth)
+  - **OpenAI** — list_models, get_model, create_chat_completion, create_embedding, create_image (Bearer auth)
+  - **Google** — list_emails, get_email, list_labels, list_events, list_files, get_user_profile (OAuth2)
+- Registry now has 14 tools total
+
+### 7B — OAuth2 Auth Type
+
+#### What was added
+- `OAuthTokenData` type in manifest.ts — stores access_token, refresh_token, expires_at, token_type
+- `TokenStore` now accepts `string | OAuthTokenData` (backward compatible with existing api_key/bearer tokens)
+- `src/services/oauth.ts` — full OAuth2 authorization code flow:
+  - `runOAuthFlow()` — starts local HTTP server, calls `onAuthUrl` callback, waits for redirect, exchanges code
+  - `refreshAccessToken()` — refreshes expired tokens using refresh_token grant
+  - `buildAuthUrl()` — constructs the authorization URL with CSRF state param
+- `src/services/auth.ts` — new functions: `saveOAuthToken()`, `getOAuthTokenData()`, `isTokenExpired()`
+- `src/commands/login.ts` — detects `auth.type === 'oauth2'` and triggers browser flow
+- `src/services/executor.ts` — auto-refreshes expired OAuth2 tokens before API calls
+- Validator updated to accept `oauth2` and validate `auth_url`, `token_url`, `scopes`
+
+#### Decisions
+- **Callback-based auth URL delivery**: `runOAuthFlow` accepts an `onAuthUrl` callback instead of returning the URL. This allows the browser to open WHILE the server is waiting for the callback. Alternative was a two-step API (start server, then await code), but the callback pattern is cleaner for the caller.
+- **Promise-free callback server**: The callback server uses a notify/store pattern instead of a shared Promise to avoid unhandled rejection errors in test environments. The `waitForCode()` function creates a fresh promise each time, reading from the stored result.
+- **Token store polymorphism**: `TokenStore = Record<string, string | OAuthTokenData>`. Plain strings for api_key/bearer, objects for oauth2. `getToken()` always returns a string (the access_token for OAuth2). This keeps the executor interface unchanged.
+- **60s expiry buffer**: `isTokenExpired()` considers a token expired 60 seconds before `expires_at`. This prevents edge cases where a request starts with a valid token but expires mid-flight.
+- **Client credentials via env vars**: `STACKRUN_OAUTH_CLIENT_ID` and `STACKRUN_OAUTH_CLIENT_SECRET` env vars override manifest/flag values. Useful for CI and shared manifests where client_id shouldn't be hardcoded.
+
+### Test coverage (cumulative)
+- 3 OAuth token storage tests (save/retrieve, plain string fallback, nonexistent)
+- 4 isTokenExpired tests (no expiry, valid, expired, 60s buffer)
+- 5 validator OAuth2 tests (valid, missing auth_url/token_url/scopes, non-HTTPS)
+- 2 buildAuthUrl tests (full URL, empty scopes)
+- 6 runOAuthFlow tests (missing auth_url, no client_id, full flow with mock, state mismatch, error callback, timeout)
+- Total: 122 tests passing

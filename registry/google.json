@@ -1,0 +1,118 @@
+{
+  "name": "google",
+  "version": "1.0.0",
+  "description": "Google APIs (Gmail, Calendar, Drive)",
+  "base_url": "https://www.googleapis.com",
+  "auth": {
+    "type": "oauth2",
+    "auth_url": "https://accounts.google.com/o/oauth2/v2/auth",
+    "token_url": "https://oauth2.googleapis.com/token",
+    "scopes": [
+      "https://www.googleapis.com/auth/gmail.readonly",
+      "https://www.googleapis.com/auth/calendar.readonly",
+      "https://www.googleapis.com/auth/drive.readonly"
+    ]
+  },
+  "commands": [
+    {
+      "name": "list_emails",
+      "method": "GET",
+      "path": "/gmail/v1/users/me/messages",
+      "description": "List email message IDs from your Gmail inbox",
+      "params": [
+        {
+          "name": "maxResults",
+          "description": "Maximum number of messages to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        },
+        {
+          "name": "q",
+          "description": "Gmail search query (e.g. 'is:unread', 'from:user@example.com')",
+          "required": false,
+          "location": "query",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "get_email",
+      "method": "GET",
+      "path": "/gmail/v1/users/me/messages/:message_id",
+      "description": "Get a specific email message by ID",
+      "params": [
+        {
+          "name": "message_id",
+          "description": "Message ID",
+          "required": true,
+          "location": "path",
+          "type": "string"
+        },
+        {
+          "name": "format",
+          "description": "Response format: full, metadata, minimal, or raw",
+          "required": false,
+          "location": "query",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "list_labels",
+      "method": "GET",
+      "path": "/gmail/v1/users/me/labels",
+      "description": "List all Gmail labels"
+    },
+    {
+      "name": "list_events",
+      "method": "GET",
+      "path": "/calendar/v3/calendars/primary/events",
+      "description": "List upcoming calendar events",
+      "params": [
+        {
+          "name": "maxResults",
+          "description": "Maximum number of events to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        },
+        {
+          "name": "timeMin",
+          "description": "Start time filter (RFC3339, e.g. 2024-01-01T00:00:00Z)",
+          "required": false,
+          "location": "query",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "list_files",
+      "method": "GET",
+      "path": "/drive/v3/files",
+      "description": "List files in Google Drive",
+      "params": [
+        {
+          "name": "pageSize",
+          "description": "Maximum number of files to return",
+          "required": false,
+          "location": "query",
+          "type": "number"
+        },
+        {
+          "name": "q",
+          "description": "Drive search query (e.g. 'mimeType=\"application/pdf\"')",
+          "required": false,
+          "location": "query",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "get_user_profile",
+      "method": "GET",
+      "path": "/gmail/v1/users/me/profile",
+      "description": "Get your Gmail profile (email, messages total, threads total)"
+    }
+  ]
+}

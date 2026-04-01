@@ -226,25 +226,38 @@
 ### Tasks
 
 #### 7A — Registry expansion (no code changes needed)
-- [ ] Add manifests: Twilio, Jira, Resend, Vercel, Cloudflare, OpenAI
-- [ ] Update `registry/index.json`
+- [x] Add manifests: Twilio, Jira, Resend, Vercel, Cloudflare, OpenAI
+- [x] Update `registry/index.json` (14 tools total: 7 existing + 6 new api_key/bearer + 1 OAuth2)
 - [ ] Each tool = content for a social media post
 
 #### 7B — OAuth2 auth type
-- [ ] New auth type: `oauth2` in manifest schema
+- [x] New auth type: `oauth2` in manifest schema
   - Fields: `auth_url`, `token_url`, `client_id`, `scopes`
-- [ ] `src/services/oauth.ts` — OAuth2 browser flow
+- [x] `src/services/oauth.ts` — OAuth2 browser flow
   - Start local HTTP server on random port
-  - Open browser to authorization URL
-  - Receive callback with auth code
+  - Calls `onAuthUrl` callback for browser opening
+  - Receive callback with auth code (CSRF protection via state param)
   - Exchange code for access token
-  - Store token via auth service
-- [ ] `stackrun login <tool>` detects `auth.type === 'oauth2'` and triggers browser flow
-- [ ] Token refresh logic (if refresh_token is provided)
-- [ ] Tests: OAuth2 flow with mocked browser/callback
-- [ ] First OAuth2 tool: Google (Gmail or Sheets)
+  - Store token via auth service (supports `OAuthTokenData` with refresh_token + expires_at)
+- [x] `stackrun login <tool>` detects `auth.type === 'oauth2'` and triggers browser flow
+  - Supports `--client-id`, `--client-secret`, `--port` flags
+  - Env vars: `STACKRUN_OAUTH_CLIENT_ID`, `STACKRUN_OAUTH_CLIENT_SECRET`
+- [x] Token refresh logic (if refresh_token is provided)
+  - Auto-refresh in executor before API calls when token is expired (60s buffer)
+  - `refreshAccessToken()` in oauth.ts handles the refresh_token grant
+- [x] Tests: OAuth2 flow with mocked browser/callback (20 new tests)
+- [x] First OAuth2 tool: Google (Gmail, Calendar, Drive)
 
-**Checkpoint:** `stackrun login google` opens browser, user authorizes, token is stored. `stackrun call google list_emails` works.
+**Checkpoint:** `stackrun login google` opens browser, user authorizes, token is stored. `stackrun call google list_emails` works. 122 tests passing. ✅ Done (2026-04-01)
+
+#### 7C — OAuth2 productization (pendiente)
+- [ ] Crear proyecto OAuth2 de Stackrun en Google Cloud Console
+- [ ] Embed `client_id` en el manifest de Google (Desktop app flow — sin necesidad de que el usuario cree credenciales)
+- [ ] Pasar verificación de Google (requiere política de privacidad, scopes justificados)
+- [ ] Evaluar PKCE como mejora de seguridad post-verificación
+- [ ] Validar el flow real contra Google con una cuenta de prueba
+
+**Checkpoint:** `stackrun login google` funciona sin flags ni configuración previa.
 
 ---
 

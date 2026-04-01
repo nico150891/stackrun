@@ -6,7 +6,7 @@ export interface ValidationError {
   expected: string;
 }
 
-const VALID_AUTH_TYPES = ['none', 'api_key', 'bearer'] as const;
+const VALID_AUTH_TYPES = ['none', 'api_key', 'bearer', 'oauth2'] as const;
 const VALID_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] as const;
 const VALID_PARAM_LOCATIONS = ['query', 'body', 'path'] as const;
 const VALID_PARAM_TYPES = ['string', 'number', 'boolean'] as const;
@@ -69,6 +69,29 @@ export function validateManifest(data: Record<string, unknown>): ValidationError
         received: auth.header,
         expected: 'string (required when auth.type is "api_key" or "bearer")',
       });
+    }
+    if (auth.type === 'oauth2') {
+      if (typeof auth.auth_url !== 'string' || !auth.auth_url.startsWith('https://')) {
+        errors.push({
+          field: 'auth.auth_url',
+          received: auth.auth_url,
+          expected: 'valid HTTPS URL (required when auth.type is "oauth2")',
+        });
+      }
+      if (typeof auth.token_url !== 'string' || !auth.token_url.startsWith('https://')) {
+        errors.push({
+          field: 'auth.token_url',
+          received: auth.token_url,
+          expected: 'valid HTTPS URL (required when auth.type is "oauth2")',
+        });
+      }
+      if (!Array.isArray(auth.scopes)) {
+        errors.push({
+          field: 'auth.scopes',
+          received: auth.scopes,
+          expected: 'array of scope strings (required when auth.type is "oauth2")',
+        });
+      }
     }
   }
 

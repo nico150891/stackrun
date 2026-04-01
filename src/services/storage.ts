@@ -2,7 +2,7 @@ import { readdir, readFile, writeFile, mkdir, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import chalk from 'chalk';
-import type { ToolManifest } from '../types/manifest.js';
+import type { ToolManifest, OAuthTokenData } from '../types/manifest.js';
 
 /** Lazily computed paths so mocks can override homedir() */
 function getConfigDir(): string {
@@ -22,7 +22,7 @@ export interface StackrunConfig {
   registryUrl?: string;
 }
 
-export type TokenStore = Record<string, string>;
+export type TokenStore = Record<string, string | OAuthTokenData>;
 
 /**
  * Ensures ~/.stackrun/ and ~/.stackrun/tools/ exist.
