@@ -146,6 +146,28 @@ Before pushing, run the same checks CI will run:
 npm run lint && npm run typecheck && npm test && npm run build
 ```
 
+## Removing files from git tracking
+
+When you need to remove a file from the repo but keep it locally (e.g., internal docs, config files):
+
+```bash
+# 1. Back up the file FIRST — merging the deletion will remove it from disk
+cp path/to/file /tmp/file.bak
+
+# 2. Add to .gitignore
+echo "path/to/file" >> .gitignore
+
+# 3. Remove from git tracking (keeps file on disk... for now)
+git rm --cached path/to/file
+
+# 4. Commit, push, open PR, merge
+
+# 5. After merge + pull, restore from backup
+cp /tmp/file.bak path/to/file
+```
+
+**Why the backup?** `git rm --cached` removes the file from tracking but not from disk. However, when the commit is merged and you `git pull`, git applies the deletion to your working tree. Without a backup, the file is gone.
+
 ## Pull Requests
 
 1. Fork the repo and create a branch from `main`
