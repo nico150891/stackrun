@@ -55,6 +55,9 @@ Examples:
       spinner.fail(`Failed to install "${tool}"`);
       const message = err instanceof Error ? err.message : String(err);
       console.error(chalk.red(`Error: ${message}`));
+      if (message.includes('not found in the registry')) {
+        console.error(chalk.gray(`Run: stackrun search ${tool}`));
+      }
       process.exitCode = 2;
     }
   });

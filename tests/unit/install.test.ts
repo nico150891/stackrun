@@ -17,7 +17,9 @@ vi.mock('axios', async () => {
   return { ...actual, default: { ...actual.default, get: vi.fn() } };
 });
 
-const axios = (await import('axios')).default;
+const axiosModule = await import('axios');
+const axios = axiosModule.default;
+const { AxiosError } = axiosModule;
 const mockedAxios = vi.mocked(axios);
 
 const { installCommand } = await import('../../src/commands/install.js');
@@ -95,5 +97,28 @@ describe('Install Command', () => {
     await installCommand.parseAsync(['bad-tool', '--force'], { from: 'user' });
 
     expect(process.exitCode).toBe(1);
+  });
+
+  it('should suggest search when tool is not found in registry', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    mockedAxios.get.mockRejectedValueOnce(
+      new AxiosError('Not found', undefined, undefined, undefined, {
+        data: {},
+        status: 404,
+        statusText: 'Not Found',
+        headers: {},
+        config: {},
+      }),
+    );
+
+    await installCommand.parseAsync(['unknown-tool'], { from: 'user' });
+
+    expect(process.exitCode).toBe(2);
+    expect(
+      consoleError.mock.calls
+        .flat()
+        .some((line) => String(line).includes('Run: stackrun search unknown-tool')),
+    ).toBe(true);
+    consoleError.mockRestore();
   });
 });
